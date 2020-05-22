@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Your Data Here. Supported file type: .xlsx</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<style>
+    body {margin: 0}
+    /* set up responsive grid*/
+    .gridWrapper {
+        height: 100vh;
+        display: grid;
+        grid-template-columns: repeat(10, 10fr);
+        grid-template-rows: 1cm 2cm repeat(8, 8fr);
+    }
+    [class*='box-']{border: 1px solid black; word-wrap: break-word;}
+    .box-menu {
+        grid-row-start:    1;
+        grid-row-end:      2;
+        grid-column-start: 1;
+        grid-column-end:   9;
+    }
+    .box-action {
+        grid-row-start:    1;
+        grid-row-end:      2;
+        grid-column-start: 9;
+        grid-column-end:  11;
+    }
+    .box-toolbar {
+        grid-row-start:    2;
+        grid-row-end:      3;
+        grid-column-start: 1;
+        grid-column-end:  11;
+        display: none;
+    }
+    .box-toolBrief {
+        grid-row-start:    3;
+        grid-row-end:      4;
+        grid-column-start: 1;
+        grid-column-end:   2;
+    }
+    .box-toolDetail {
+        grid-row-start:    4;
+        grid-row-end:     11;
+        grid-column-start: 1;
+        grid-column-end:   2;
+    }
+    .box-graph {
+        grid-row-start:    3;
+        grid-row-end:     9;
+        grid-column-start: 2;
+        grid-column-end:  11;
+        padding: 20px;
+    }
+    .box-result {
+        grid-row-start:    9;
+        grid-row-end:     11;
+        grid-column-start: 2;
+        grid-column-end:  11;
+    }
+    .menuButton {
+        background-color: white;
+        border: 1px solid black;
+        color: black;
+        height: 100%;
+        width: 3cm;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 0 0;
+        cursor: pointer;
+    }
+    .actionButton {
+        height: 1cm;
+        width: 1cm;
+    }
+    .toolbarButton {
+        background-color: white;
+        border: 1px solid black;
+        color: black;
+        height: 100%;
+        width: 2cm;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    .graphBlock {
+        width: 2.5cm;
+        height: 2.5cm;
+        border: 1px solid black;
+        display: inline-block;
+    }
+    .arrowImg {
+        height: 1cm;
+    }
+</style>
+
+</head>
+<body onload="switchToolbar('favorites')">
+<div class="gridWrapper">
+    <div class="box-menu">   <!-- block for file upload -->
+        <!-- Upload form. make sure use enctype attribute! -->
+        <button class="menuButton" name="favorites" onclick="switchToolbar('favorites')">favorites</button>
+        <button class="menuButton" name="math" onclick="switchToolbar('math')">math</button>
+    </div>
+    <div class="box-action">
+        <button class="actionButton"></button>
+    </div>
+    <div id="toolbarFavorites" name="favorites" class="box-toolbar">   <!-- block for file upload -->
+        <button id="inputToolButton" class="toolbarButton" draggable="true" ondragstart="drag(event)">input</button>
+        <button id="sortToolButton" class="toolbarButton" draggable="true" ondragstart="drag(event)">sort</button>
+        <button id="filterToolButton" class="toolbarButton" draggable="true" ondragstart="drag(event)">filter</button>
+        <button id="sumToolButton" class="toolbarButton" draggable="true" ondragstart="drag(event)">&#931</button>
+        <button id="averageToolButton" class="toolbarButton" draggable="true" ondragstart="drag(event)">average</button>
+        <button id="plotToolButton" nodeType="endNode" class="toolbarButton" draggable="true" ondragstart="drag(event)">plot</button>
+        <button id="outputToolButton" nodeType="endNode" class="toolbarButton" draggable="true" ondragstart="drag(event)">output</button>
+    </div>
+    <div id="toolbarMath" name="math" class="box-toolbar">
+        <button id="plusToolButton" class="toolbarButton" draggable="true" ondragstart="drag(event)">+</button>
+        <button id="minusToolButton" class="toolbarButton" draggable="true" ondragstart="drag(event)">-</button>
+        <button id="multiplyToolButton" class="toolbarButton" draggable="true" ondragstart="drag(event)">&times</button>
+        <button id="divideToolButton" class="toolbarButton" draggable="true" ondragstart="drag(event)">&divide</button>
+        <button id="expToolButton" class="toolbarButton" draggable="true" ondragstart="drag(event)">a<sup>x</sup></button>
+    </div>
+    <section name="toolConfig">
+        <div name="input">
+            <div name="upload" class="box-toolBrief">   <!-- block for file upload -->
+                <!-- Upload form. make sure use enctype attribute! -->
+                <form action="{% url 'dashboard' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <p>{{ form.non_field_errors }}</p>
+                    <p>{{ form.fileField.label_tag }} {{ form.fileField.help_text }}</p>
+                    <p>{{ form.fileField.errors }}
+                       {{ form.fileField }}</p>
+                    <p><input type="submit" value="Upload"/></p>
+                </form>
+            </div>
+            <div name="listFiles" class="box-toolDetail">
+                <!-- List of uploaded documents -->
+                <p> My Database</p>
+                {% if fileModels %}
+                    <ul>
+                        {% for fileModel in fileModels %}
+                        <li><a href="{{ fileModel.fileField.url }}"> {{ fileModel.fileField.name }} </a></li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No documents.</p>
+                {% endif %}
+            </div>
+        </div>
+        <div name="sort">
+            <div name="column" class="box-toolBrief"></div>
+            <div name="order" class="box-toolDetail"></div>
+        </div>
+    </section>
+    <div class="box-graph">
+        <div id="graphBlock1" class="graphBlock" ondrop="drop(event, this)" ondragover="allowDrop(event)"></div>
+    </div>
+    <div class="box-result">
+        <p>This is the result area</p>
+    </div>
+
+</div>
+<script>
+function switchToolbar(name){
+    // deactivate prev one
+    $("button.menuButton").css({'background-color':'white', 'color':'black'});
+    $("div.box-toolbar").hide();
+    // active current one
+    $("div.box-toolbar[name="+name+"]").show();
+    $("button.menuButton[name="+name+"]").css({'background-color':'green', 'color':'white'});
+}
+function allowDrop(ev) {
+    ev.preventDefault();
+}  // allow item to be drag onto another element, which is not allowed by default.
+function drag(ev) {
+    ev.dataTransfer.setData("toolBlock",ev.target.id);
+}
+function drop(ev, parentBlock) {
+    ev.preventDefault();
+    var toolId = ev.dataTransfer.getData("toolBlock");
+    var blockNumber = Number(parentBlock.id.slice(-1))
+    {% load static %}
+    if ($("#"+toolId).attr('nodeType') !== 'endNode'){
+        console.log(($("#"+toolId).attr('nodeType')))
+        //add arrow
+        $(parentBlock.parentElement).append(
+            "<img id='arrowImg"+blockNumber.toString()+"' src='{% static 'dashboard/arrow.svg'%}' class='arrowImg' />");
+        //create a new block in box-graph
+        var siblingBlock = parentBlock.cloneNode(true);
+        siblingBlock.id = parentBlock.id.slice(0, -1) +(blockNumber+1).toString(); //increment block number
+        parentBlock.parentElement.append(siblingBlock);
+    }
+    //put button in the parent block
+    var nodeCopy = document.getElementById(toolId).cloneNode(true);
+    nodeCopy.id = toolId+"_"+parentBlock.id;
+    ev.target.appendChild(nodeCopy);
+}
+</script>
+</body>
+</html>
