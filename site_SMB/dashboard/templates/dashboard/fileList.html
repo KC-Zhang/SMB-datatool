@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+    {% load static %}  <!--load static medias-->
     <title>Upload Your Data Here. Supported file type: .xlsx</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <style>
     body {margin: 0}
     /* set up responsive grid*/
@@ -13,7 +16,7 @@
         grid-template-columns: repeat(10, 10fr);
         grid-template-rows: 1cm 2cm repeat(8, 8fr);
     }
-    [class*='box-']{border: 1px solid black; word-wrap: break-word;}
+    [class*='box-']{border: 1px solid black; word-break: break-all;}
     .box-menu {
         grid-row-start:    1;
         grid-row-end:      2;
@@ -25,6 +28,7 @@
         grid-row-end:      2;
         grid-column-start: 9;
         grid-column-end:  11;
+        padding: 5px 0;
     }
     .box-toolbar {
         grid-row-start:    2;
@@ -33,30 +37,37 @@
         grid-column-end:  11;
         display: none;
     }
-    .box-toolBrief {
+    .box-toolConfig {
         grid-row-start:    3;
-        grid-row-end:      4;
-        grid-column-start: 1;
-        grid-column-end:   2;
-    }
-    .box-toolDetail {
-        grid-row-start:    4;
         grid-row-end:     11;
         grid-column-start: 1;
-        grid-column-end:   2;
+        grid-column-end:   3;
+        display: none;
+    }
+    .box-toolBrief {
+        padding: 5px;
+        border: none;
+        border-bottom: 1px solid black;;
+    }
+    .box-toolDetail {
+        padding: 5px;
+        padding-top: 10px;
+        border: none;
     }
     .box-graph {
         grid-row-start:    3;
         grid-row-end:     9;
-        grid-column-start: 2;
+        grid-column-start: 3;
         grid-column-end:  11;
         padding: 20px;
+        border: none;
     }
     .box-result {
         grid-row-start:    9;
         grid-row-end:     11;
-        grid-column-start: 2;
+        grid-column-start: 3;
         grid-column-end:  11;
+        display: none;
     }
     .menuButton {
         background-color: white;
@@ -72,19 +83,27 @@
         cursor: pointer;
     }
     .actionButton {
-        height: 1cm;
-        width: 1cm;
+        height: 100%;
+        display: inline-block;
+        margin: 0 5px;
     }
     .toolbarButton {
         background-color: white;
         border: 1px solid black;
         color: black;
-        height: 100%;
+        height: 2cm;
         width: 2cm;
         text-align: center;
         text-decoration: none;
         display: inline-block;
         font-size: 16px;
+        cursor: grab;
+    }
+    .toolButtonInGraph {
+        background-color: white;
+        border: none;
+        height: 2cm;
+        width: 2cm;
         cursor: pointer;
     }
     .graphBlock {
@@ -92,13 +111,24 @@
         height: 2.5cm;
         border: 1px solid black;
         display: inline-block;
+        vertical-align: middle;
     }
     .arrowImg {
         height: 1cm;
+        vertical-align: middle;
+    }
+    .fileListButton {
+        background-color: lightgray;
+        border: none;
+        color: black;
+        text-align: left;
+        text-decoration: none;
+        cursor: pointer;
     }
 </style>
-
 </head>
+
+
 <body onload="switchToolbar('favorites')">
 <div class="gridWrapper">
     <div class="box-menu">   <!-- block for file upload -->
@@ -106,100 +136,272 @@
         <button class="menuButton" name="favorites" onclick="switchToolbar('favorites')">favorites</button>
         <button class="menuButton" name="math" onclick="switchToolbar('math')">math</button>
     </div>
+
     <div class="box-action">
-        <button class="actionButton"></button>
+        <input class="actionButton" type="image" src="{% static 'dashboard/start.png' %}" onclick="run()"></input>
     </div>
+
+    <!-- set default onclick action to none, which will be changed after its dragged to a block-->
     <div id="toolbarFavorites" name="favorites" class="box-toolbar">   <!-- block for file upload -->
-        <button id="inputToolButton" class="toolbarButton" draggable="true" ondragstart="drag(event)">input</button>
-        <button id="sortToolButton" class="toolbarButton" draggable="true" ondragstart="drag(event)">sort</button>
-        <button id="filterToolButton" class="toolbarButton" draggable="true" ondragstart="drag(event)">filter</button>
-        <button id="sumToolButton" class="toolbarButton" draggable="true" ondragstart="drag(event)">&#931</button>
-        <button id="averageToolButton" class="toolbarButton" draggable="true" ondragstart="drag(event)">average</button>
-        <button id="plotToolButton" nodeType="endNode" class="toolbarButton" draggable="true" ondragstart="drag(event)">plot</button>
-        <button id="outputToolButton" nodeType="endNode" class="toolbarButton" draggable="true" ondragstart="drag(event)">output</button>
+        <button id="inputToolButton" nodeType="input" name="input_" class="toolbarButton" draggable="true" ondragstart="drag(event)"
+                onclick="return 0; showToolConfig(this.name, $(this).attr('blockNumber'))"">input</button>
+        <button id="sortToolButton" class="toolbarButton" name="sort_" draggable="true" ondragstart="drag(event)"
+                onclick="return 0; showToolConfig(this.name, $(this).attr('blockNumber'))" >sort</button>
+        <button id="filterToolButton" class="toolbarButton" name="filter_" draggable="true" ondragstart="drag(event)"
+                onclick="return 0; showToolConfig(this.name, $(this).attr('blockNumber'))">filter</button>
+        <button id="sumToolButton" class="toolbarButton" name="sum_" draggable="true" ondragstart="drag(event)"
+                onclick="return 0; showToolConfig(this.name, $(this).attr('blockNumber'))">&#931</button>
+        <button id="averageToolButton" class="toolbarButton" name="average_" draggable="true" ondragstart="drag(event)"
+                onclick="return 0; showToolConfig(this.name, $(this).attr('blockNumber'))">average</button>
+        <button id="plotToolButton" nodeType="endNode" class="toolbarButton" name="plot_" draggable="true" ondragstart="drag(event)"
+                onclick="return 0; showToolConfig(this.name, $(this).attr('blockNumber'))">plot</button>
+        <button id="outputToolButton" nodeType="endNode" class="toolbarButton" name="output_" draggable="true" ondragstart="drag(event)"
+                onclick="return 0; showToolConfig(this.name, $(this).attr('blockNumber'))">output</button>
     </div>
     <div id="toolbarMath" name="math" class="box-toolbar">
-        <button id="plusToolButton" class="toolbarButton" draggable="true" ondragstart="drag(event)">+</button>
-        <button id="minusToolButton" class="toolbarButton" draggable="true" ondragstart="drag(event)">-</button>
-        <button id="multiplyToolButton" class="toolbarButton" draggable="true" ondragstart="drag(event)">&times</button>
-        <button id="divideToolButton" class="toolbarButton" draggable="true" ondragstart="drag(event)">&divide</button>
-        <button id="expToolButton" class="toolbarButton" draggable="true" ondragstart="drag(event)">a<sup>x</sup></button>
+        <button id="plusToolButton" class="toolbarButton" name="plus_" draggable="true" ondragstart="drag(event)"
+                onclick="return 0; showToolConfig(this.name, $(this).attr('blockNumber'))">+</button>
+        <button id="minusToolButton" class="toolbarButton" name="minus_" draggable="true" ondragstart="drag(event)"
+                onclick="return 0; showToolConfig(this.name, $(this).attr('blockNumber'))">-</button>
+        <button id="multiplyToolButton" class="toolbarButton" name="multiply_" draggable="true" ondragstart="drag(event)"
+                onclick="return 0; showToolConfig(this.name, $(this).attr('blockNumber'))">&times</button>
+        <button id="divideToolButton" class="toolbarButton" name="divide_" draggable="true"  ondragstart="drag(event)"
+                onclick="return 0; showToolConfig(this.name, $(this).attr('blockNumber'))">&divide</button>
+        <button id="expToolButton" class="toolbarButton" name="power_" draggable="true" ondragstart="drag(event)"
+                onclick="return 0; showToolConfig(this.name, $(this).attr('blockNumber'))">a<sup>x</sup></button>
     </div>
-    <section name="toolConfig">
-        <div name="input">
-            <div name="upload" class="box-toolBrief">   <!-- block for file upload -->
-                <!-- Upload form. make sure use enctype attribute! -->
-                <form action="{% url 'dashboard' %}" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <p>{{ form.non_field_errors }}</p>
-                    <p>{{ form.fileField.label_tag }} {{ form.fileField.help_text }}</p>
-                    <p>{{ form.fileField.errors }}
-                       {{ form.fileField }}</p>
-                    <p><input type="submit" value="Upload"/></p>
-                </form>
-            </div>
-            <div name="listFiles" class="box-toolDetail">
-                <!-- List of uploaded documents -->
-                <p> My Database</p>
-                {% if fileModels %}
-                    <ul>
-                        {% for fileModel in fileModels %}
-                        <li><a href="{{ fileModel.fileField.url }}"> {{ fileModel.fileField.name }} </a></li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>No documents.</p>
-                {% endif %}
-            </div>
+
+    <div name="input_" class="box-toolConfig">
+        <div name="upload" class="box-toolBrief">   <!-- block for file upload -->
+            <!-- Upload form. make sure use enctype attribute! -->
+            <form action="{% url 'dashboard' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <p>{{ form.non_field_errors }}</p>
+                <p>{{ form.fileField.label_tag }} {{ form.fileField.help_text }}</p>
+                <p>{{ form.fileField.errors }}
+                   {{ form.fileField }}</p>
+                <p><input type="submit" value="Upload"/></p>
+            </form>
         </div>
-        <div name="sort">
-            <div name="column" class="box-toolBrief"></div>
-            <div name="order" class="box-toolDetail"></div>
+        <div name="listFiles" class="box-toolDetail">
+            <!-- List of uploaded documents -->
+            <p> Choose a file:</p>
+            {% if fileModels %}
+                <ul>
+                    {% for fileModel in fileModels %}
+                    <li> <button class="fileListButton" onclick="chooseInput_(this, fName='{{ fileModel.fileField.name }}')">{{ fileModel.fileField.name }} </button></li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No documents.</p>
+            {% endif %}
+            </div>
+    </div>
+    <div name="sort_" class="box-toolConfig">
+        <div name="column" class="box-toolBrief">Sorting configuration:</div>
+        <div name="order" class="box-toolDetail">
+                <!-- input column to sort by # -->
+            <label for="colNum-toolConfig">Type in the column number:</label><br>
+            <input type="text" id="colNum-toolConfig" name="columnNumber"><br>
+                <!-- select sort order -->
+            <p>Select the sorting order:</p>
+            <div>
+                <input type="radio" name="sortOrder" value="ascending" checked>
+                <label for="ascending">Ascending</label>
+            </div>
+            <div>
+                <input type="radio" name="sortOrder" value="descending">
+                <label for="descending">Descending</label>
+            </div>
+            <br>
+            <input type="submit" value="Submit" onclick="setSort_(this)">
         </div>
-    </section>
+    </div>
+    <div name="output_" class="box-toolConfig">
+        <div name="column" class="box-toolBrief">Output configuration: </div>
+        <div name="output_" class="box-toolDetail">
+            <p> Your graph is finished </p>
+            <p> Click the green triangle to run the graph and download the output file. </p>
+        </div>
+    </div>
+
+
     <div class="box-graph">
-        <div id="graphBlock1" class="graphBlock" ondrop="drop(event, this)" ondragover="allowDrop(event)"></div>
+        <div id="graphBlock0" number="0" class="graphBlock" ondrop="drop(event, this)" ondragover="allowDrop(event)"></div>
     </div>
+
     <div class="box-result">
         <p>This is the result area</p>
     </div>
-
 </div>
+
 <script>
-function switchToolbar(name){
-    // deactivate prev one
-    $("button.menuButton").css({'background-color':'white', 'color':'black'});
-    $("div.box-toolbar").hide();
-    // active current one
-    $("div.box-toolbar[name="+name+"]").show();
-    $("button.menuButton[name="+name+"]").css({'background-color':'green', 'color':'white'});
-}
-function allowDrop(ev) {
-    ev.preventDefault();
-}  // allow item to be drag onto another element, which is not allowed by default.
-function drag(ev) {
-    ev.dataTransfer.setData("toolBlock",ev.target.id);
-}
-function drop(ev, parentBlock) {
-    ev.preventDefault();
-    var toolId = ev.dataTransfer.getData("toolBlock");
-    var blockNumber = Number(parentBlock.id.slice(-1))
-    {% load static %}
-    if ($("#"+toolId).attr('nodeType') !== 'endNode'){
-        console.log(($("#"+toolId).attr('nodeType')))
-        //add arrow
-        $(parentBlock.parentElement).append(
-            "<img id='arrowImg"+blockNumber.toString()+"' src='{% static 'dashboard/arrow.svg'%}' class='arrowImg' />");
-        //create a new block in box-graph
-        var siblingBlock = parentBlock.cloneNode(true);
-        siblingBlock.id = parentBlock.id.slice(0, -1) +(blockNumber+1).toString(); //increment block number
-        parentBlock.parentElement.append(siblingBlock);
+    //util functions
+    {
+    function assert(condition, message) {
+        if (!condition) {
+            throw message || "Assertion failed";
+        }
     }
-    //put button in the parent block
-    var nodeCopy = document.getElementById(toolId).cloneNode(true);
-    nodeCopy.id = toolId+"_"+parentBlock.id;
-    ev.target.appendChild(nodeCopy);
-}
+    function assertAlert(condition, message) {
+        if (!condition) {
+            alert( message || "Assertion failed");
+            throw message || "Assertion failed";
+
+        }
+    }
+    function tempAlert(msg,duration)
+        {
+         var el = document.createElement("div");
+         el.setAttribute("style","position:absolute;top:40%;left:20%;background-color:white;");
+         el.innerHTML = msg;
+         setTimeout(function(){
+          el.parentNode.removeChild(el);
+         },duration);
+         document.body.appendChild(el);
+        }
+    }
+
+    //toolbar& menu
+    {
+        function switchToolbar(name) {
+            // deactivate prev one
+            $("button.menuButton").css({'background-color': 'white', 'color': 'black'});
+            $("div.box-toolbar").hide();
+            // active current one
+            $("div.box-toolbar[name=" + name + "]").show();
+            $("button.menuButton[name=" + name + "]").css({'background-color': 'green', 'color': 'white'});
+        }
+    }
+
+    // graph
+    {
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }  // allow item to be drag onto another element, which is not allowed by default.
+    function drag(ev) {
+        ev.dataTransfer.setData("$toolInBlock",ev.target.id);
+    }
+    function drop(ev, parentBlock) {
+        ev.preventDefault();
+        var toolId = ev.dataTransfer.getData("$toolInBlock");
+        var blockNumber = Number($(parentBlock).attr('number'));
+        assert($(".graphBlock[number="+blockNumber.toString()+"]").find($("button")).length===0,
+            "each block only takes one functional element"); // disallow multiple input per block
+        if ($("#"+toolId).attr('nodeType') !== 'endNode'){
+            //add arrow
+            $(parentBlock.parentElement).append(
+                "<img id='arrowImg"+blockNumber.toString()+"' src='{% static 'dashboard/arrow.svg'%}' class='arrowImg' />");
+            //create a new block in box-graph
+            var siblingBlock = parentBlock.cloneNode(true);
+            $(siblingBlock).attr('number', (blockNumber+1).toString());
+            $(siblingBlock).attr('id', $(siblingBlock).attr('class') +$(siblingBlock).attr('number')); //increment block number
+            parentBlock.parentElement.append(siblingBlock);
+        }
+        //put button in the parent block
+        var nodeCopy = document.getElementById(toolId).cloneNode(true);
+        nodeCopy.id = toolId+"_"+parentBlock.id;
+        $(nodeCopy).attr('blockNumber', blockNumber.toString());
+        // enable onclick function
+        var priorOnclick = $(nodeCopy).attr('onclick');
+        assert(priorOnclick.slice(0, 10)==="return 0; ", "onclick function for the toolbar tools must start with 'return 0; '");
+        $(nodeCopy).attr('class','toolButtonInGraph');   // change style
+        $(nodeCopy).attr('onclick',priorOnclick.slice(10));  // activate onclick actions
+        ev.target.appendChild(nodeCopy);
+        //resize block size
+        $(parentBlock).css({'height':'auto', 'width':'auto'});
+        //triger onclick function
+        $(nodeCopy).click();
+    }
+    function showToolConfig(name,blockNumber) {
+        $('.box-toolConfig').hide();
+        $('.box-toolConfig[name='+name+']').attr('blockNumber',blockNumber);
+        $('.box-toolConfig[name='+name+']').show();
+    }
+    }
+
+    //tool config
+    {
+        function chooseInput_(thisElem, fName) {
+            var blockNumber=$(thisElem).closest('div[class=\'box-toolConfig\']').attr('blockNumber');
+            $('#inputToolButton_graphBlock' + blockNumber).text(fName);
+            $('#inputToolButton_graphBlock' + blockNumber).css('height', 'auto');
+            $('#inputToolButton_graphBlock' + blockNumber).attr('userConfigs', JSON.stringify({blockNumber: blockNumber,
+                                                                                               fName: fName}));
+        }
+        function setSort_(thisElem) {
+            var blockNumber=$(thisElem).closest('div[class=\'box-toolConfig\']').attr('blockNumber')
+            assert($(thisElem).parent().attr('class')==='box-toolDetail', "submit button needs to be in box-toolDetail div")
+            var colNum = $(thisElem).parent().find('input[name=\'columnNumber\']').val();
+            var sortOrder = $(thisElem).parent().find('input[name=\'sortOrder\']:checked').attr('value');
+            assertAlert( colNum.length, "Please type in column number");
+            assertAlert(!isNaN(colNum), "column number input only accepts numbers.");
+            $('#sortToolButton_graphBlock' + blockNumber).attr('userConfigs', JSON.stringify({blockNumber: blockNumber,
+                                                                                              colNum: colNum,
+                                                                                              sortOrder: sortOrder}));
+        }
+        function outputFile_(thisElem) {
+            var blockNumber=$(thisElem).closest('div[class=\'box-toolConfig\']').attr('blockNumber')
+            $('#outputToolButton_graphBlock' + blockNumber).attr('userConfigs', JSON.stringify({}));
+        }
+    }
+
+    //run
+    {
+        function runGraphBackend(userConfigs) {
+            userConfigs = JSON.stringify(userConfigs)
+            {##}
+            {#axios.post('runGraph', {#}
+            {#    userConfigs: userConfigs,#}
+            {#    'csrfmiddlewaretoken': '{{ csrf_token }}',#}
+            {#  .then((response) => {#}
+            {#  const url = window.URL.createObjectURL(new Blob([response.data]));#}
+            {#  const link = document.createElement('a');#}
+            {#  link.href = url;#}
+            {#  link.setAttribute('download', 'file.xlsx');#}
+            {#  document.body.appendChild(link);#}
+            {#  link.click();#}
+            $.post("runGraph",
+                {
+                    userConfigs: userConfigs,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                function (data, status) {
+                    var blob = new Blob([data]);
+                    var link=document.createElement('a');
+                    url =window.URL.createObjectURL(blob)
+                    link.href=url;
+                    link.download="download.xlsx";
+                    document.body.append(link);
+                    link.click();
+                    console.log(url)
+                    link.remove();
+                    window.URL.revokeObjectURL(url);
+                    tempAlert(status + "! download process started", 1)
+                });
+        }
+
+        function run(number = 0, funcAndConfList = []) {
+                // load file from the first block
+            var $toolInBlock= $('#graphBlock' + number).children();
+            assert($toolInBlock.length===1);
+            if (number === 0) {
+                    // make sure first block contain and only contain an input element
+                assertAlert($toolInBlock.length, "Drop an input to the graph to create a workflow")
+                assertAlert($toolInBlock.attr("nodeType") === "input", "The first block needs to be an input element")
+            }
+            if ($toolInBlock.attr('nodeType') === 'endNode'){
+                    // endNode reached, call backend process
+                funcAndConfList.push({func:$toolInBlock.attr('name'), args:'{}'});
+                runGraphBackend(userConfigs=funcAndConfList);
+                console.log('sent graph to backend for processing');
+                return void(0);
+            }
+            assertAlert($toolInBlock.attr('userConfigs'), $toolInBlock.attr('name').slice(0, -1) + " tool in graph block " + number + " is not configured.");
+            funcAndConfList.push({func:$toolInBlock.attr('name'), args:$toolInBlock.attr('userConfigs')});
+            run(number+1, funcAndConfList);
+        }
+    }
 </script>
 </body>
 </html>
