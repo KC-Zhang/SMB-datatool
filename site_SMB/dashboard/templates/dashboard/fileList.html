@@ -354,16 +354,23 @@
         function runGraphBackend(userConfigs) {
             var csrftoken = Cookies.get('csrftoken');
             const fetchUrl='runGraph';
-            fetch(fetchUrl,{method: 'POST', headers:{'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': csrftoken}, body:JSON.stringify(userConfigs), credentials: 'same-origin'})
-            .then(data=>data.blob())
-            .then(blob=>{
-                var url = window.URL.createObjectURL(blob);
-                var a = document.createElement('a');
-                a.href = url;
-                a.download = "filename.xlsx";
-                document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
-                a.click();
-                a.remove();  //afterwards we remove the element again
+            const fetchHeader ={
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': csrftoken};
+            fetch(fetchUrl,{method: 'POST', headers:fetchHeader, body:JSON.stringify(userConfigs), credentials: 'same-origin'})
+            .then(response=>{
+                    // get filename
+                var fName = response.headers.get('Content-Disposition').split("filename=")[1];
+                response.blob().then(blob=>{
+                    var url = window.URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = fName
+                    document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+                    a.click();
+                    a.remove();  //afterwards we remove the element again
+                })
             })
 
 

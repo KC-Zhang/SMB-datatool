@@ -10,20 +10,22 @@ import os
 import json
 import pandas
 from io import BytesIO
+from datetime import datetime
 
 # graph-tool Functions
-def input_(args, pdFile):
+def input_(args, blockIO):
     path = FileModel.objects.filter(fileField__endswith=args['fName'])[0].fileField.path
-    pdFile = pandas.read_excel(path)
-    pdFile.fileName = args['fName']
-    pdFile._metadata += ['fileName']
-    return pdFile
-def sort_(args, pdFile):
-    return pdFile.sort_values(by=pdFile.columns[int(args['colNum'])-1], ascending={'ascending':True, 'descending':False}[args['sortOrder']])
-def output_(args,pdFile):
+    blockIO['pd'] = pandas.read_excel(path)
+    blockIO['fName'] = args['fName']
+    return blockIO
+def sort_(args, blockIO):
+    blockIO['pd']= blockIO['pd'].sort_values(by=blockIO['pd'].columns[int(args['colNum'])-1], ascending={'ascending':True, 'descending':False}[args['sortOrder']])
+    return blockIO
+def output_(args,blockIO):
     sio = BytesIO()
     PandasWriter = pandas.ExcelWriter(sio, engine='xlsxwriter')
-    pdFile.to_excel(PandasWriter, sheet_name='sheet1')
+    pd = blockIO['pd']
+    pd.to_excel(PandasWriter, sheet_name='sheet1')
     PandasWriter.save()
     PandasWriter.close()
     workbook = sio.getvalue()
@@ -31,18 +33,9 @@ def output_(args,pdFile):
 
     response = HttpResponse(workbook,
                                      content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename=%s' % pdFile.fileName
-    return response
-    # saveName='modified_'+pdFile.fileName
-    # file_path = os.path.join(settings.MEDIA_ROOT, saveName)
-    # pdFile.to_excel(file_path)
-    # if os.path.exists(file_path):
-    #     with open(file_path, 'rb') as f:
-    #         # allow download
-    #         response = HttpResponse(f.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    #         response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
-    #         return response
-    # raise Http404()
+    response['Content-Disposition'] = 'attachment; filename=%s' % datetime.now().strftime("%Y%m%d_%H%M")[2:] +"_"+ blockIO['fName']
+    blockIO['res']=response
+    return blockIO
 
 graphFuncMap = {
     'input_': input_,
@@ -74,10 +67,10 @@ def listFiles(request):
 
 def runGraph(request):
     userConfigs = json.loads(request.body.decode('utf8').replace("'", '"'))
-    pdFile=None
+    blockIO = {'pd': None, 'fName': None, 'res': None}
     for item in userConfigs:
         graphFunction = graphFuncMap[item['func']]
         args = json.loads(item['args'])
-        pdFile = graphFunction(args, pdFile)
+        blockIO = graphFunction(args, blockIO)
 
-    return pdFile
+    return blockIO['res']
