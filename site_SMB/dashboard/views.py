@@ -16,10 +16,10 @@ def input_(args, pdFile):
     path = FileModel.objects.filter(fileField__endswith=args['fName'])[0].fileField.path
     pdFile = pandas.read_excel(path)
     pdFile.fileName = args['fName']
+    pdFile._metadata += ['fileName']
     return pdFile
 def sort_(args, pdFile):
-    pdFile.sort_values(by=pdFile.columns[int(args['colNum'])-1], ascending={'ascending':True, 'descending':False}[args['sortOrder']])
-    return pdFile
+    return pdFile.sort_values(by=pdFile.columns[int(args['colNum'])-1], ascending={'ascending':True, 'descending':False}[args['sortOrder']])
 def output_(args,pdFile):
     sio = BytesIO()
     PandasWriter = pandas.ExcelWriter(sio, engine='xlsxwriter')
@@ -29,7 +29,7 @@ def output_(args,pdFile):
     workbook = sio.getvalue()
     sio.seek(0)
 
-    response = FileResponse(workbook,
+    response = HttpResponse(workbook,
                                      content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=%s' % pdFile.fileName
     return response
@@ -73,7 +73,7 @@ def listFiles(request):
     )
 
 def runGraph(request):
-    userConfigs = json.loads(request.POST['userConfigs'])
+    userConfigs = json.loads(request.body.decode('utf8').replace("'", '"'))
     pdFile=None
     for item in userConfigs:
         graphFunction = graphFuncMap[item['func']]
