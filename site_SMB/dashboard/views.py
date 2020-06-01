@@ -73,7 +73,7 @@ def dashboard(request):
         if request.user.is_authenticated: # logged in user
             fileModels = FileModel.objects.filter(user=request.user)
         else:
-            fileModels = FileModel.objects.filter(session_key=request.session.session_key)
+            fileModels = FileModel.objects.filter(user=None, session_key=request.session.session_key)
     else:
         fileModels= FileModel.objects.all()
 
