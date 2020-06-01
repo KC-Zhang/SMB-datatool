@@ -44,12 +44,24 @@ graphFuncMap = {
 }
 
 # django functions
-def listFiles(request):
+def dashboard(request):
+    # check whether the user is logged in
+    loggedIn = False
+    if request.user.is_authenticated:
+        loggedIn = True
+
+
     if request.method == 'POST':
         # handle file upload
         form = FileUploadForm(request.POST, request.FILES)
         if form.is_valid():  # check if all fields are filled
             newDoc = FileModel(fileField=request.FILES['fileField'])
+            if request.user.is_authenticated:
+                newDoc.user=request.user
+            else:
+                if not request.session.session_key:
+                    request.session.save()
+                newDoc.session_key=request.session.session_key
             newDoc.save()
             # re-direct to doc list
             return HttpResponseRedirect(reverse('dashboard'))
@@ -57,12 +69,19 @@ def listFiles(request):
         form = FileUploadForm() # A empty, unbound form
 
     # load all uploaded files
-    fileModels = FileModel.objects.all()
+    if FileModel.objects.all(): # having existing file
+        if request.user.is_authenticated: # logged in user
+            fileModels = FileModel.objects.filter(user=request.user)
+        else:
+            fileModels = FileModel.objects.filter(session_key=request.session.session_key)
+    else:
+        fileModels= FileModel.objects.all()
+
 
     # Render list page with docs and forms
     return render(request,
-        'dashboard/fileList.html',
-        {'fileModels': fileModels, 'form': form}
+        'dashboard/dashboard.html',
+        {'fileModels': fileModels, 'form': form, 'loggedIn':int(loggedIn)}
     )
 
 def runGraph(request):

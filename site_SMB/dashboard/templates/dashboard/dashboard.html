@@ -9,7 +9,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
-
 <style>
     body {margin: 0}
     /* set up responsive grid*/
@@ -30,6 +29,13 @@
         grid-row-start:    1;
         grid-row-end:      2;
         grid-column-start: 9;
+        grid-column-end:  11;
+        padding: 5px 0;
+    }
+    .box-account {
+        grid-row-start:    1;
+        grid-row-end:      2;
+        grid-column-start:10;
         grid-column-end:  11;
         padding: 5px 0;
     }
@@ -90,6 +96,7 @@
         display: inline-block;
         margin: 0 5px;
     }
+
     .toolbarButton {
         background-color: white;
         border: 1px solid black;
@@ -143,11 +150,17 @@
     <div class="box-action">
         <input class="actionButton" type="image" src="{% static 'dashboard/start.png' %}" onclick="run()"></input>
     </div>
+    <div class="box-account">
+        <input class="actionButton" type="image" src="{% static 'dashboard/signup.png' %}" onload='this.style.display=["inline-block", "none"][Number({{ loggedIn }})]' onclick="location.href = 'accounts/signup'"></input>
+        <input class="actionButton" type="image" src="{% static 'dashboard/login.png' %}" onload='this.style.display=["inline-block", "none"][Number({{ loggedIn }})]' onclick="location.href = 'accounts/login'"></input>
+        <input class="actionButton" type="image" src="{% static 'dashboard/logout.png' %}" onload='this.style.display=["none","inline-block"][Number({{ loggedIn }})]' onclick="location.href = 'accounts/logout'"></input>
+
+    </div>
 
     <!-- set default onclick action to none, which will be changed after its dragged to a block-->
     <div id="toolbarFavorites" name="favorites" class="box-toolbar">   <!-- block for file upload -->
         <button id="inputToolButton" nodeType="input" name="input_" class="toolbarButton" draggable="true" ondragstart="drag(event)"
-                onclick="return 0; showToolConfig(this.name, $(this).attr('blockNumber'))"">input</button>
+                onclick="return 0; showToolConfig(this.name, $(this).attr('blockNumber'))">input</button>
         <button id="sortToolButton" class="toolbarButton" name="sort_" draggable="true" ondragstart="drag(event)"
                 onclick="return 0; showToolConfig(this.name, $(this).attr('blockNumber'))" >sort</button>
         <button id="filterToolButton" class="toolbarButton" name="filter_" draggable="true" ondragstart="drag(event)"
@@ -353,7 +366,7 @@
     {
         function runGraphBackend(userConfigs) {
             var csrftoken = Cookies.get('csrftoken');
-            const fetchUrl='runGraph';
+            const fetchUrl='runGraph/';
             const fetchHeader ={
                 'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 'X-Requested-With': 'XMLHttpRequest',
