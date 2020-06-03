@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['34.92.69.244', '127.0.0.1']
 
 INSTALLED_APPS = [
     'dashboard.apps.DashboardConfig',
+    'landingPage.apps.LandingpageConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

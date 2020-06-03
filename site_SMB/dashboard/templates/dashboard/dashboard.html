@@ -96,7 +96,6 @@
         display: inline-block;
         margin: 0 5px;
     }
-
     .toolbarButton {
         background-color: white;
         border: 1px solid black;
@@ -127,13 +126,19 @@
         height: 1cm;
         vertical-align: middle;
     }
-    .fileListButton {
-        background-color: lightgray;
+    .fileListButton{
         border: none;
         color: black;
         text-align: left;
         text-decoration: none;
         cursor: pointer;
+        background-color: lightgray;
+    }
+    .fileList {
+        border: none;
+        color: black;
+        text-align: left;
+        text-decoration: none;
     }
 </style>
 </head>
@@ -160,7 +165,7 @@
     <!-- set default onclick action to none, which will be changed after its dragged to a block-->
     <div id="toolbarFavorites" name="favorites" class="box-toolbar">   <!-- block for file upload -->
         <button id="inputToolButton" nodeType="input" name="input_" class="toolbarButton" draggable="true" ondragstart="drag(event)"
-                onclick="return 0; showToolConfig(this.name, $(this).attr('blockNumber'))">input</button>
+                onclick="return 0; enableFileListButtons(this); showToolConfig(this.name, $(this).attr('blockNumber'));">input</button>
         <button id="sortToolButton" class="toolbarButton" name="sort_" draggable="true" ondragstart="drag(event)"
                 onclick="return 0; showToolConfig(this.name, $(this).attr('blockNumber'))" >sort</button>
         <button id="filterToolButton" class="toolbarButton" name="filter_" draggable="true" ondragstart="drag(event)"
@@ -187,7 +192,7 @@
                 onclick="return 0; showToolConfig(this.name, $(this).attr('blockNumber'))">a<sup>x</sup></button>
     </div>
 
-    <div name="input_" class="box-toolConfig">
+    <div name="input_" class="box-toolConfig"  style="display: block">
         <div name="upload" class="box-toolBrief">   <!-- block for file upload -->
             <!-- Upload form. make sure use enctype attribute! -->
             <form action="{% url 'dashboard' %}" method="post" enctype="multipart/form-data">
@@ -201,11 +206,17 @@
         </div>
         <div name="listFiles" class="box-toolDetail">
             <!-- List of uploaded documents -->
-            <p> Choose a file:</p>
             {% if fileModels %}
-                <ul>
+                <!-- non clickable list -->
+                <ul name="fileList">
                     {% for fileModel in fileModels %}
-                    <li> <button class="fileListButton" onclick="chooseInput_(this, fName='{{ fileModel.fileField.name }}')">{{ fileModel.fileField.name }} </button></li>
+                        <li class="fileList"> {{ fileModel.fileField.name }} </li>
+                    {% endfor %}
+                </ul>
+                <!-- clickable list -->
+                <ul name="fileListWithButtons" style="display: none">
+                    {% for fileModel in fileModels %}
+                        <li><button onclick="chooseInput_(this, fName='{{ fileModel.fileField.name }}')" class="fileListButton">{{ fileModel.fileField.name }} </button></li>
                     {% endfor %}
                 </ul>
             {% else %}
@@ -338,6 +349,14 @@
 
     //tool config
     {
+        function enableFileListButtons(thisElem) {
+            const name = thisElem.name; const blockNumber = $(thisElem).attr('blockNumber');
+            const $toolConfig = $('.box-toolConfig[name='+name+']');
+            console.log($toolConfig.children())
+            $toolConfig.children('div[name=\'listFiles\']').prepend('<h3> Choose a file: </h3>');
+            $toolConfig.children('div[name=\'listFiles\']').children('ul[name=\'fileListWithButtons\']').show()
+            $toolConfig.children('div[name=\'listFiles\']').children('ul[name=\'fileList\']').hide()
+        }
         function chooseInput_(thisElem, fName) {
             var blockNumber=$(thisElem).closest('div[class=\'box-toolConfig\']').attr('blockNumber');
             $('#inputToolButton_graphBlock' + blockNumber).text(fName);
