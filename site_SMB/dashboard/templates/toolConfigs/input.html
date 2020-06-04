@@ -1,0 +1,18 @@
+{% load static %}
+<!-- List of uploaded documents -->
+{% if fileModels %}
+    <!-- non clickable list -->
+    <ul name="fileList">
+        {% for fileModel in fileModels %}
+            <li class="fileList"> <input type="image" src= "{% static 'dashboard/delete.png' %}" onclick="send$Post(this, 'deleteFile/', {fileID: {{ fileModel.id }} },  reloadDivID='listFileToolDetails')" style="height: 1em"/>  <span>{{ fileModel.fileField.name }} </span> </li>
+        {% endfor %}
+    </ul>
+    <!-- clickable list -->
+    <ul name="fileListWithButtons" style="display: none">
+        {% for fileModel in fileModels %}
+            <li><input type="image" src= "{% static 'dashboard/delete.png' %}" onclick="send$Post(this, 'deleteFile/', {fileID: {{ fileModel.id }} }, reloadDivID='listFileToolDetails')" style="height: 1em"/><span><button onclick="chooseInput_(this, fName='{{ fileModel.fileField.name }}')" class="fileListButton">{{ fileModel.fileField.name }} </button></span></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No documents.</p>
+{% endif %}

@@ -6,6 +6,8 @@ from django.contrib import admin
 
 urlpatterns = [
         path('', views.dashboard, name='dashboard'),
+        path('uploadFile/', views.uploadFile, name='uploadFile'),
         path('runGraph/', views.runGraph, name='runGraph'),
+        path('deleteFile/', views.deleteFile, name='deleteFile')
         ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

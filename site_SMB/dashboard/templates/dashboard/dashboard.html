@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token }}">
     {% load static %}  <!--load static medias-->
-    <title>Upload Your Data Here. Supported file type: .xlsx</title>
+    <title>data Dashboard</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
@@ -58,7 +58,7 @@
         border: none;
         border-bottom: 1px solid black;;
     }
-    .box-toolDetail {
+    .box-toolDetails {
         padding: 5px;
         padding-top: 10px;
         border: none;
@@ -164,7 +164,7 @@
 
     <!-- set default onclick action to none, which will be changed after its dragged to a block-->
     <div id="toolbarFavorites" name="favorites" class="box-toolbar">   <!-- block for file upload -->
-        <button id="inputToolButton" nodeType="input" name="input_" class="toolbarButton" draggable="true" ondragstart="drag(event)"
+        <button id="inputToolButton" nodeType="input" name="inputConfig" class="toolbarButton" draggable="true" ondragstart="drag(event)"
                 onclick="return 0; enableFileListButtons(this); showToolConfig(this.name, $(this).attr('blockNumber'));">input</button>
         <button id="sortToolButton" class="toolbarButton" name="sort_" draggable="true" ondragstart="drag(event)"
                 onclick="return 0; showToolConfig(this.name, $(this).attr('blockNumber'))" >sort</button>
@@ -192,41 +192,25 @@
                 onclick="return 0; showToolConfig(this.name, $(this).attr('blockNumber'))">a<sup>x</sup></button>
     </div>
 
-    <div name="input_" class="box-toolConfig"  style="display: block">
+    <div id="inputToolConfig" name="inputConfig" class="box-toolConfig"  style="display: block">
         <div name="upload" class="box-toolBrief">   <!-- block for file upload -->
             <!-- Upload form. make sure use enctype attribute! -->
-            <form action="{% url 'dashboard' %}" method="post" enctype="multipart/form-data">
+            <form action="{% url 'uploadFile' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <p>{{ form.non_field_errors }}</p>
                 <p>{{ form.fileField.label_tag }} {{ form.fileField.help_text }}</p>
                 <p>{{ form.fileField.errors }}
                    {{ form.fileField }}</p>
-                <p><input type="submit" value="Upload"/></p>
+                <p><input type="submit" value="Upload" onclick="send$Form($(this.closest('form')), reloadDivID='listFileToolDetails')"/></p>
             </form>
         </div>
-        <div name="listFiles" class="box-toolDetail">
-            <!-- List of uploaded documents -->
-            {% if fileModels %}
-                <!-- non clickable list -->
-                <ul name="fileList">
-                    {% for fileModel in fileModels %}
-                        <li class="fileList"> {{ fileModel.fileField.name }} </li>
-                    {% endfor %}
-                </ul>
-                <!-- clickable list -->
-                <ul name="fileListWithButtons" style="display: none">
-                    {% for fileModel in fileModels %}
-                        <li><button onclick="chooseInput_(this, fName='{{ fileModel.fileField.name }}')" class="fileListButton">{{ fileModel.fileField.name }} </button></li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>No documents.</p>
-            {% endif %}
-            </div>
+        <div id="listFileToolDetails" name="listFiles" class="box-toolDetails">
+               {% include 'toolConfigs/input.html' %}
+        </div>
     </div>
     <div name="sort_" class="box-toolConfig">
         <div name="column" class="box-toolBrief">Sorting configuration:</div>
-        <div name="order" class="box-toolDetail">
+        <div name="order" class="box-toolDetails">
                 <!-- input column to sort by # -->
             <label for="colNum-toolConfig">Type in the column number:</label><br>
             <input type="text" id="colNum-toolConfig" name="columnNumber"><br>
@@ -246,7 +230,7 @@
     </div>
     <div name="output_" class="box-toolConfig">
         <div name="column" class="box-toolBrief">Output configuration: </div>
-        <div name="output_" class="box-toolDetail">
+        <div name="output_" class="box-toolDetails">
             <p> Your graph is finished </p>
             <p> Click the green triangle to run the graph and download the output file. </p>
         </div>
@@ -265,27 +249,62 @@
 <script>
     //util functions
     {
-    function assert(condition, message) {
-        if (!condition) {
-            throw message || "Assertion failed";
+        function assert(condition, message) {
+            if (!condition) {
+                throw message || "Assertion failed";
+            }
         }
-    }
-    function assertAlert(condition, message) {
-        if (!condition) {
-            alert( message || "Assertion failed");
-            throw message || "Assertion failed";
 
+        function assertAlert(condition, message) {
+            if (!condition) {
+                alert(message || "Assertion failed");
+                throw message || "Assertion failed";
+
+            }
         }
-    }
-    function tempAlert(msg,duration)
-        {
-         var el = document.createElement("div");
-         el.setAttribute("style","position:absolute;top:40%;left:20%;background-color:white;");
-         el.innerHTML = msg;
-         setTimeout(function(){
-          el.parentNode.removeChild(el);
-         },duration);
-         document.body.appendChild(el);
+
+        function tempAlert(msg, duration) {
+            var el = document.createElement("div");
+            el.setAttribute("style", "position:absolute;top:40%;left:20%;background-color:white;");
+            el.innerHTML = msg;
+            setTimeout(function () {
+                el.parentNode.removeChild(el);
+            }, duration);
+            document.body.appendChild(el);
+        }
+
+        function send$Post(elem, url, dict, reloadDivID=null) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: dict,
+                headers: {'X-CSRFToken': Cookies.get('csrftoken')},
+                success: function (data) {
+                    if(reloadDivID) {
+                        $('#' + reloadDivID).html(data);
+                    }
+                },
+            })
+        }
+
+        function send$Form($form, reloadDivID=null) {
+            $form.submit(function(e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+                $.ajax({
+                    url: $form[0].action,
+                    type: 'POST',
+                    data: formData,
+                    success: function (data) {
+                        if(reloadDivID) {
+                            $('#' + reloadDivID).html(data);
+                        }
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                });
+            });
         }
     }
 
@@ -352,7 +371,6 @@
         function enableFileListButtons(thisElem) {
             const name = thisElem.name; const blockNumber = $(thisElem).attr('blockNumber');
             const $toolConfig = $('.box-toolConfig[name='+name+']');
-            console.log($toolConfig.children())
             $toolConfig.children('div[name=\'listFiles\']').prepend('<h3> Choose a file: </h3>');
             $toolConfig.children('div[name=\'listFiles\']').children('ul[name=\'fileListWithButtons\']').show()
             $toolConfig.children('div[name=\'listFiles\']').children('ul[name=\'fileList\']').hide()
@@ -366,7 +384,7 @@
         }
         function setSort_(thisElem) {
             var blockNumber=$(thisElem).closest('div[class=\'box-toolConfig\']').attr('blockNumber')
-            assert($(thisElem).parent().attr('class')==='box-toolDetail', "submit button needs to be in box-toolDetail div")
+            assert($(thisElem).parent().attr('class')==='box-toolDetails', "submit button needs to be in box-toolDetails div")
             var colNum = $(thisElem).parent().find('input[name=\'columnNumber\']').val();
             var sortOrder = $(thisElem).parent().find('input[name=\'sortOrder\']:checked').attr('value');
             assertAlert( colNum.length, "Please type in column number");
@@ -404,26 +422,6 @@
                     a.remove();  //afterwards we remove the element again
                 })
             })
-
-
-            {#$.post("runGraph",#}
-            {#    {#}
-            {#        userConfigs: userConfigs,#}
-            {#        csrfmiddlewaretoken: '{{ csrf_token }}'#}
-            {#    },#}
-            {#    function (data, status) {#}
-            {#        var blob = new Blob([data]);#}
-            {#        var link=document.createElement('a');#}
-            {#        url =window.URL.createObjectURL(blob)#}
-            {#        link.href=url;#}
-            {#        link.download="download.xlsx";#}
-            {#        document.body.append(link);#}
-            {#        link.click();#}
-            {#        console.log(url)#}
-            {#        link.remove();#}
-            {#        window.URL.revokeObjectURL(url);#}
-            {#        tempAlert(status + "! download process started", 1)#}
-            {#    });#}
         }
 
         function run(number = 0, funcAndConfList = []) {

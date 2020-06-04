@@ -38,19 +38,63 @@ def output_(args,blockIO):
     return blockIO
 
 graphFuncMap = {
-    'input_': input_,
+    'inputConfig': input_,
     'sort_': sort_,
     'output_': output_
 }
 
-# django functions
-def dashboard(request):
+#helper functions
+def loadUploadedFiles(request):
+    if FileModel.objects.all(): # having existing file
+        if request.user.is_authenticated: # logged in user
+            fileModels = FileModel.objects.filter(user=request.user)
+        else:
+            fileModels = FileModel.objects.filter(user=None, session_key=request.session.session_key)
+    else:
+        fileModels= FileModel.objects.all()
+    return fileModels
+
+def checkUserLogin(request):
     # check whether the user is logged in
     loggedIn = False
     if request.user.is_authenticated:
         loggedIn = True
+    return loggedIn
+
+def listFiles(request, form=None):
+    loggedIn = checkUserLogin(request)
+    # load all uploaded files
+    fileModels = loadUploadedFiles(request)
+    # Render list page with docs and forms
+    return render(request,
+                  'toolConfigs/input.html',
+                  {'fileModels': fileModels, 'loggedIn': int(loggedIn),  'form': form}
+                  )
+
+# graph functions:
+def runGraph(request):
+    userConfigs = json.loads(request.body.decode('utf8').replace("'", '"'))
+    blockIO = {'pd': None, 'fName': None, 'res': None}
+    for item in userConfigs:
+        graphFunction = graphFuncMap[item['func']]
+        args = json.loads(item['args'])
+        blockIO = graphFunction(args, blockIO)
+
+    return blockIO['res']
 
 
+# django view
+def dashboard(request):
+    loggedIn = checkUserLogin(request)
+    # load all uploaded files
+    fileModels = loadUploadedFiles(request)
+    form = FileUploadForm() # A empty, unbound form
+    return render(request,
+                  'dashboard/dashboard.html',
+                  {'fileModels': fileModels, 'form':form, 'loggedIn': int(loggedIn)}
+                  )
+
+def uploadFile(request):
     if request.method == 'POST':
         # handle file upload
         form = FileUploadForm(request.POST, request.FILES)
@@ -63,33 +107,18 @@ def dashboard(request):
                     request.session.save()
                 newDoc.session_key=request.session.session_key
             newDoc.save()
-            # re-direct to doc list
-            return HttpResponseRedirect(reverse('dashboard'))
-    else:
-        form = FileUploadForm() # A empty, unbound form
+        form = FileUploadForm()  # A empty, unbound form
 
-    # load all uploaded files
-    if FileModel.objects.all(): # having existing file
-        if request.user.is_authenticated: # logged in user
-            fileModels = FileModel.objects.filter(user=request.user)
+    return listFiles(request)
+
+def deleteFile(request):
+    if request.method=='POST':
+        # check whether the user is logged in
+        if request.user.is_authenticated:  # logged in user
+            assert (FileModel.objects.get(pk=request.POST['fileID']).user==request.user)
         else:
-            fileModels = FileModel.objects.filter(user=None, session_key=request.session.session_key)
-    else:
-        fileModels= FileModel.objects.all()
+            assert (FileModel.objects.get(pk=request.POST['fileID']).user==None)
 
+        FileModel.objects.get(pk=request.POST['fileID']).delete()
 
-    # Render list page with docs and forms
-    return render(request,
-        'dashboard/dashboard.html',
-        {'fileModels': fileModels, 'form': form, 'loggedIn':int(loggedIn)}
-    )
-
-def runGraph(request):
-    userConfigs = json.loads(request.body.decode('utf8').replace("'", '"'))
-    blockIO = {'pd': None, 'fName': None, 'res': None}
-    for item in userConfigs:
-        graphFunction = graphFuncMap[item['func']]
-        args = json.loads(item['args'])
-        blockIO = graphFunction(args, blockIO)
-
-    return blockIO['res']
+    return listFiles(request)
