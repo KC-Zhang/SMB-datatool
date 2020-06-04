@@ -144,7 +144,7 @@
 </head>
 
 
-<body onload="switchToolbar('favorites')">
+<body onload="switchToolbar('favorites');">
 <div class="gridWrapper">
     <div class="box-menu">   <!-- block for file upload -->
         <!-- Upload form. make sure use enctype attribute! -->
@@ -371,10 +371,14 @@
         function enableFileListButtons(thisElem) {
             const name = thisElem.name; const blockNumber = $(thisElem).attr('blockNumber');
             const $toolConfig = $('.box-toolConfig[name='+name+']');
-            $toolConfig.children('div[name=\'listFiles\']').prepend('<h3> Choose a file: </h3>');
+            $('#ChooseAFileH4').html('Choose a file:');
             $toolConfig.children('div[name=\'listFiles\']').children('ul[name=\'fileListWithButtons\']').show()
             $toolConfig.children('div[name=\'listFiles\']').children('ul[name=\'fileList\']').hide()
         }
+        {#function disableFileListButtons() {#}
+        {#    const $toolConfig = $('.box-toolConfig[name=\'inputConfig\']');#}
+        {#    $toolConfig.children('div[name=\'listFiles\']').children('ul[name=\'fileListWithButtons\']').hide()#}
+        {#}#}
         function chooseInput_(thisElem, fName) {
             var blockNumber=$(thisElem).closest('div[class=\'box-toolConfig\']').attr('blockNumber');
             $('#inputToolButton_graphBlock' + blockNumber).text(fName);
