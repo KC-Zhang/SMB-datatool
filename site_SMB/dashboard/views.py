@@ -13,15 +13,53 @@ from io import BytesIO
 from datetime import datetime
 
 # graph-tool Functions
-def input_(args, blockIO):
+def loadInputSheetAsDataframe(args, blockIO):
     path = FileModel.objects.filter(fileField__endswith=args['fName'])[0].fileField.path
     blockIO['pd'] = pandas.read_excel(path)
     blockIO['fName'] = args['fName']
     return blockIO
-def sort_(args, blockIO):
+def deleteARowOrColumn(args, blockIO):
+    if int(args['rowOrColumnNumber'])==1:
+        blockIO['pd']= removeAndReplaceHeaderRow(blockIO['pd'])
+        return blockIO
+    blockIO['pd'] = blockIO['pd'].drop([int(args['rowOColumnNumber'])-2], axis=0)
+    return blockIO
+def sortAColumn(args, blockIO):
     blockIO['pd']= blockIO['pd'].sort_values(by=blockIO['pd'].columns[int(args['colNum'])-1], ascending={'ascending':True, 'descending':False}[args['sortOrder']])
     return blockIO
-def output_(args,blockIO):
+def filterAColumn(args, blockIO):
+    df = blockIO['pd']
+    columnNumber = int(args['columnNumber'])-1 # 1 indexing to 0 indexing
+    targetValueString = args['targetValue']
+    if args['filterType'] == "equal":
+        blockIO['pd'] = df.loc[df[df.columns[columnNumber]] == targetValueString]
+        return blockIO
+    if args['filterType'] == "contain":
+        blockIO['pd'] = df.loc[df[df.columns[columnNumber]].str.contains(targetValueString)]
+        return blockIO
+    if args['filterType'] == "notContain":
+        blockIO['pd'] = df.loc[~df[df.columns[columnNumber]].str.contains(targetValueString)] # ~ is invert, similar to !
+        return blockIO
+    if args['filterType'] == "largerThan":
+        blockIO['pd'] = df.loc[df[df.columns[columnNumber]] > int(targetValueString)]
+        return blockIO
+    if args['filterType'] == "smallerThan":
+        blockIO['pd'] = df.loc[df[df.columns[columnNumber]] < int(targetValueString)]
+        return blockIO
+    if args['filterType'] == "largerOrEqualTo":
+        blockIO['pd'] = df.loc[df[df.columns[columnNumber]] >= int(targetValueString)]
+        return blockIO
+    if args['filterType'] == "smallerOrEqualTo":
+        blockIO['pd'] = df.loc[df[df.columns[columnNumber]] <= int(targetValueString)]
+        return blockIO
+
+
+def removeAndReplaceHeaderRow(df):
+    newHeader = df.iloc[0]
+    df = df[1:]
+    df.columns = newHeader
+    return df
+def downloadOutputFile(args,blockIO):
     sio = BytesIO()
     PandasWriter = pandas.ExcelWriter(sio, engine='xlsxwriter')
     pd = blockIO['pd']
@@ -38,9 +76,11 @@ def output_(args,blockIO):
     return blockIO
 
 graphFuncMap = {
-    'inputConfig': input_,
-    'sort_': sort_,
-    'output_': output_
+    'loadInputSheetAsDataframe': loadInputSheetAsDataframe,
+    'sortAColumn': sortAColumn,
+    'filterAColumn': filterAColumn,
+    'downloadOutputFile': downloadOutputFile,
+    'deleteARowOrColumn': deleteARowOrColumn
 }
 
 #helper functions
@@ -67,7 +107,7 @@ def listFiles(request, form=None):
     fileModels = loadUploadedFiles(request)
     # Render list page with docs and forms
     return render(request,
-                  'toolConfigs/input.html',
+                  'configPanel/input.html',
                   {'fileModels': fileModels, 'loggedIn': int(loggedIn),  'form': form}
                   )
 

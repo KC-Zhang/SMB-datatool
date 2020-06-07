@@ -1,0 +1,23 @@
+{% load static %}
+<!-- List of uploaded documents -->
+{% if fileModels %}
+    <!-- non clickable list -->
+    <div name="uploadedFileList">
+        <ul>
+            {% for fileModel in fileModels %}
+                <li class="fileList"> <input type="image" src= "{% static 'dashboard/delete.png' %}" onclick="send$Post(this, 'deleteFile/', {fileID: {{ fileModel.id }} },  reloadDivID='listFileToolDetails')" style="height: 1em"/>  <span>{{ fileModel.fileField.name }} </span> </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div name="uploadedFileListWithButtons" style="display: none;">
+        <!-- clickable list -->
+        <h4 id="ChooseAFileH4"> </h4>
+        <ul>
+            {% for fileModel in fileModels %}
+                <li><button onclick="BlockConfigPanel.attachFileNameConfigsToBlock(this, fName='{{ fileModel.fileField.name }}')" class="fileListButton">{{ fileModel.fileField.name }} </button></li>
+            {% endfor %}
+        </ul>
+    </div>
+{% else %}
+    <p>No documents.</p>
+{% endif %}
