@@ -1,0 +1,21 @@
+<div name="deleteARowOrColumnConfigs" class="box-configPanel">
+    <div class="box-toolBrief"> Delete a Row/Column </div>
+    <div class="box-toolDetails">
+{#            <p> Delete a row or column?</p>#}
+{#            <div>#}
+{#                <input type="radio" name="isRowOrColumn" value="row" checked>#}
+{#                <label for="row">Row</label>#}
+{#            </div>#}
+{#            <div>#}
+{#                <input type="radio" name="isRowOrColumn" value="column">#}
+{#                <label for="column">Column</label>#}
+{#            </div>#}
+{#            <br>#}
+            <!-- input column to sort by # -->
+        <label for="rowOrColumnNumberToDelete">Type in the row number:</label><br>
+        <input type="text" id="rowOrColumnNumberToDelete" name="colOrRowNumber"><br>
+        <br>
+            <!-- select sort order -->
+        <input type="submit" value="Submit" onclick="BlockConfigPanel.attachRowOrColumnDeletionConfigsToBlock(this);$(this).val('Submitted')">
+    </div>
+</div>

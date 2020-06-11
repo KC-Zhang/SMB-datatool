@@ -1,0 +1,241 @@
+{% load static %}
+<script>
+    //util functions
+{
+    function assert(condition, message) {
+        if (!condition) {
+            throw message || "Assertion failed";
+        }
+    }
+
+    function assertAlert(condition, message) {
+        if (!condition) {
+            alert(message || "Assertion failed");
+            throw message || "Assertion failed";
+
+        }
+    }
+
+    function tempAlert(msg, duration) {
+        var el = document.createElement("div");
+        el.setAttribute("style", "position:absolute;top:40%;left:20%;background-color:white;");
+        el.innerHTML = msg;
+        setTimeout(function () {
+            el.parentNode.removeChild(el);
+        }, duration);
+        document.body.appendChild(el);
+    }
+
+    function $sendPostAndReloadDiv(elem, url, dict, reloadDivID=null) {
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: dict,
+            headers: {'X-CSRFToken': Cookies.get('csrftoken')},
+            success: function (data) {
+                if(reloadDivID) {
+                    $('#' + reloadDivID).html(data);
+                }
+            },
+        })
+    }
+
+    function send$Form($form, reloadDivID=null) {
+        $form.submit(function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            $.ajax({
+                url: $form[0].action,
+                type: 'POST',
+                data: formData,
+                success: function (data) {
+                    if(reloadDivID) {
+                        $('#' + reloadDivID).html(data);
+                    }
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        });
+    }
+}
+
+var Toolbar = {
+    drag: function(ev) {
+        ev.dataTransfer.setData("toolID",ev.target.id);
+    },
+    switchToolbar: function(name) {
+        // deactivate prev one
+        $("button.menuButton").css({'background-color': 'white', 'color': 'black'});
+        $("div.box-toolbar").hide();
+        // active current one
+        $("div.box-toolbar[name=" + name + "]").show();
+        $("button.menuButton[name=" + name + "]").css({'background-color': 'green', 'color': 'white'});
+    }
+}
+
+var BlockGraph = {
+    allowDrop: function(ev) {
+    ev.preventDefault();
+},  // allow item to be drag onto another element, which is not allowed by default.
+    drop: function(ev, parentBlock) {
+        ev.preventDefault();
+        var toolId = ev.dataTransfer.getData("toolID");
+        var blockNumber = Number($(parentBlock).attr('number'));
+        assert($(".graphBlock[number="+blockNumber.toString()+"]").find($("button")).length===0,
+            "each block only takes one functional element"); // disallow multiple input per block
+        if ($("#"+toolId).attr('nodeType') !== 'endNode'){
+            //add arrow
+            $(parentBlock.parentElement).append(
+                "<img id='arrowImg"+blockNumber.toString()+"' src='{% static 'dashboard/arrow.svg'%}' class='arrowImg' />");
+            //create a new block in box-graph
+            var siblingBlock = parentBlock.cloneNode(true);
+            $(siblingBlock).attr('number', (blockNumber+1).toString());
+            $(siblingBlock).attr('id', $(siblingBlock).attr('class') +$(siblingBlock).attr('number')); //increment block number
+            parentBlock.parentElement.append(siblingBlock);
+        }
+        //put button in the parent block
+        var nodeCopy = document.getElementById(toolId).cloneNode(true);
+        nodeCopy.id = toolId+"_"+parentBlock.id;
+        $(nodeCopy).attr('blockNumber', blockNumber.toString());
+        // enable onclick function
+        var priorOnclick = $(nodeCopy).attr('onclick');
+        assert(priorOnclick.slice(0, 10)==="return 0; ", "onclick function for the toolbar tools must start with 'return 0; '");
+        $(nodeCopy).attr('class','toolButtonInGraph');   // change style
+        $(nodeCopy).attr('onclick',priorOnclick.slice(10));  // activate onclick actions
+        ev.target.appendChild(nodeCopy);
+        //resize block size
+        $(parentBlock).css({'height':'auto', 'width':'auto'});
+        //triger onclick function
+        $(nodeCopy).click();
+    },
+    showToolConfig: function(configPanelName, blockNumber) {
+        $('.box-configPanel').hide();
+        $('.box-configPanel[name='+configPanelName+']').attr('blockNumber',blockNumber);
+        $('.box-configPanel[name='+configPanelName+']').show();
+
+    }
+}
+var BlockConfigPanel = {
+    setFileNameClickable: function(configPanelName) {
+        const $configPanel = $('.box-configPanel[name=' + configPanelName + ']');
+        $('#ChooseAFileH4').html('Choose a file:');
+        $configPanel.children('div[name=\'listFiles\']').children('div[name=\'uploadedFileListWithButtons\']').show()
+        $configPanel.children('div[name=\'listFiles\']').children('div[name=\'uploadedFileList\']').hide()
+    },
+    attachFileNameConfigsToBlock: function(thisElem, fileName) {
+        var blockNumber = $(thisElem).closest('div[class=\'box-configPanel\']').attr('blockNumber');
+        this.displayFileNameOnBlock(fileName, blockNumber);
+        $('#inputToolButton_graphBlock' + blockNumber).attr('userConfigs', JSON.stringify({
+            blockNumber: blockNumber,
+            fName: fName
+        }));
+    },
+    displayFileNameOnBlock: function(fileName, blockNumber){
+        $('#inputToolButton_graphBlock' + blockNumber).text(fileName);
+        $('#inputToolButton_graphBlock' + blockNumber).css('height', 'auto');
+    },
+    attachRowOrColumnDeletionConfigsToBlock: function(thisElem) {
+        var blockNumber = $(thisElem).closest('div[class=\'box-configPanel\']').attr('blockNumber')
+        assert($(thisElem).parent().attr('class') === 'box-toolDetails', "submit button needs to be placed in the box-toolDetails div")
+        var rowOrColumnNumber = $(thisElem).parent().find('input[name=\'colOrRowNumber\']').val();
+        var isRowOrColumn = $(thisElem).parent().find('input[name=\'isRowOrColumn\']:checked').attr('value');
+        assertAlert(rowOrColumnNumber.length, "Please type in the row or column number");
+        assertAlert(!isNaN(rowOrColumnNumber), "row/column number input only accepts numbers.");
+        $('#deleteARowOrColumnButton_graphBlock' + blockNumber).attr('userConfigs', JSON.stringify({
+            blockNumber: blockNumber,
+            isRowOrColumn: isRowOrColumn,
+            rowOrColumnNumber: rowOrColumnNumber
+        }));
+    },
+    attachSortConfigsToBlock: function(thisElem) {
+        var blockNumber = $(thisElem).closest('div[class=\'box-configPanel\']').attr('blockNumber')
+        assert($(thisElem).parent().attr('class') === 'box-toolDetails', "submit button needs to be placed in the box-toolDetails div")
+        var columnNumber = $(thisElem).parent().find('input[name=\'columnNumber\']').val();
+        var sortOrder = $(thisElem).parent().find('input[name=\'sortOrder\']:checked').attr('value');
+        assertAlert(columnNumber.length, "Please type in column number");
+        assertAlert(!isNaN(columnNumber), "column number input only accepts numbers.");
+        $('#sortToolButton_graphBlock' + blockNumber).attr('userConfigs', JSON.stringify({
+            blockNumber: blockNumber,
+            columnNumber: columnNumber,
+            sortOrder: sortOrder
+        }));
+    },
+    attachFilterConfigsToBlock: function (thisElem) {
+        const blockNumber = $(thisElem).closest('div[class=\'box-configPanel\']').attr('blockNumber')
+        assert($(thisElem).parent().attr('class') === 'box-toolDetails', "submit button needs to be placed in the box-toolDetails div")
+        const columnNumber = $(thisElem).parent().find('input[name=\'columnNumber\']').val();
+        const filterType = $(thisElem).parent().find('input[name=\'filterType\']:checked').attr('value');
+        const targetValue = $(thisElem).parent().find('input[name=\'targetValue\']').val();
+        this.validateFilterConfigInputs(columnNumber,filterType,targetValue);
+        $('#filterToolButton_graphBlock' + blockNumber).attr('userConfigs', JSON.stringify({
+            blockNumber: blockNumber,
+            columnNumber: columnNumber,
+            filterType: filterType,
+            targetValue: targetValue,
+        }));
+    },
+    validateFilterConfigInputs(columnNumber, filterType, targetValue){
+        assertAlert(columnNumber.length, "Please type in column number.");
+        assertAlert(!isNaN(columnNumber), "column number input only accepts numbers.");
+        assertAlert(targetValue.length, "Enter the value/text to compare the filter with.");
+        if (["largerThan", "smallerThan", "largerOrEqualTo", "smallerOrEqualTo"].includes(filterType)){
+            assertAlert(!isNaN(targetValue), filterType + " filter must compare to a numerical target.");
+        }
+    }
+}
+
+//run
+{
+    function runGraphBackend(userConfigs) {
+        var csrftoken = Cookies.get('csrftoken');
+        const fetchUrl='runGraph/';
+        const fetchHeader ={
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': csrftoken};
+        fetch(fetchUrl,{method: 'POST', headers:fetchHeader, body:JSON.stringify(userConfigs), credentials: 'same-origin'})
+        .then(response=>{
+                // get filename
+            var fName = response.headers.get('Content-Disposition').split("filename=")[1];
+            response.blob().then(blob=>{
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = fName
+                document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+                a.click();
+                a.remove();  //afterwards we remove the element again
+            })
+        })
+    }
+
+    function run(number = 0, functionNameAndConfigsInEachBlock = []) {
+        var $blockWithTool= $('#graphBlock' + number).children();
+        assertAlert($blockWithTool.length!==0, 'The graph needs to end with a output');
+        assertAlert($blockWithTool.length<2, 'block ' + number + ' contains more than 1 tool in it.');
+            // load file from the first block
+        if (number === 0) {
+                // make sure first block contain and only contain an input element
+            assertAlert($blockWithTool.length, "Drop an input to the graph to create a workflow")
+            assertAlert($blockWithTool.attr("nodeType") === "input", "The first block needs to be an input element")
+        }
+            // output
+        if ($blockWithTool.attr('nodeType') === 'endNode'){
+                // endNode reached, call backend process
+            functionNameAndConfigsInEachBlock.push({func:$blockWithTool.attr('backEndFunctionName'), args:'{}'});
+            runGraphBackend(userConfigs=functionNameAndConfigsInEachBlock);
+            console.log('sent graph to backend for processing');
+            return void(0);
+        }
+            // check if a block is not configured
+        assertAlert($blockWithTool.attr('userConfigs'), $blockWithTool.attr('configPanelName').slice(0, -1) + " tool in graph block " + number + " is not configured.");
+            // append block config
+        functionNameAndConfigsInEachBlock.push({func:$blockWithTool.attr('backEndFunctionName'), args:$blockWithTool.attr('userConfigs')});
+            // next block
+        run(number+1, functionNameAndConfigsInEachBlock);
+    }
+}
+
+</script>

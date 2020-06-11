@@ -1,0 +1,16 @@
+<div id="inputConfigPanel" name="inputConfigs" class="box-configPanel" style="display: block">
+    <div name="upload" class="box-toolBrief">   <!-- block for file upload -->
+        <!-- Upload form. make sure use enctype attribute! -->
+        <form action="{% url 'uploadFile' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>{{ form.non_field_errors }}</p>
+            <p>{{ form.fileField.label_tag }} {{ form.fileField.help_text }}</p>
+            <p>{{ form.fileField.errors }}
+               {{ form.fileField }}</p>
+            <p><input type="submit" value="Upload" onclick="send$Form($(this.closest('form')), reloadDivID='listFileToolDetails')"/></p>
+        </form>
+    </div>
+    <div id="listFileToolDetails" name="listFiles" class="box-toolDetails">
+           {% include 'configPanel/input.html' %}
+    </div>
+</div>

@@ -5,7 +5,7 @@
     <div name="uploadedFileList">
         <ul>
             {% for fileModel in fileModels %}
-                <li class="fileList"> <input type="image" src= "{% static 'dashboard/delete.png' %}" onclick="send$Post(this, 'deleteFile/', {fileID: {{ fileModel.id }} },  reloadDivID='listFileToolDetails')" style="height: 1em"/>  <span>{{ fileModel.fileField.name }} </span> </li>
+                <li class="fileList"> <input type="image" src= "{% static 'dashboard/delete.png' %}" onclick="$sendPostAndReloadDiv(this, 'deleteFile/', {fileID: {{ fileModel.id }} },  reloadDivID='listFileToolDetails')" style="height: 1em"/>  <span>{{ fileModel.fileField.name }} </span> </li>
             {% endfor %}
         </ul>
     </div>

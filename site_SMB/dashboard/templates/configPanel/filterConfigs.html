@@ -1,0 +1,45 @@
+
+<div name="filterConfigs" class="box-configPanel">
+    <div name="column" class="box-toolBrief">Filter A Column:</div>
+    <div name="order" class="box-toolDetails">
+            <!-- input column to sort by # -->
+        <label for="columnNumberToFilter">Type in the column number:</label><br>
+        <input type="text" id="columnNumberToFilter" name="columnNumber"><br>
+            <!-- select sort order -->
+        <p>Select the filter:</p>
+        <div name="filterTypeSelector">
+            <div>
+                <input type="radio" name="filterType" value="contain" checked>
+                <label for="contain">Contain</label>
+            </div>
+            <div>
+                <input type="radio" name="filterType" value="notContain">
+                <label for="notContain">NotContain</label>
+            </div>
+            <div>
+                <input type="radio" name="filterType" value="equal">
+                <label for="equal">Equal</label>
+            </div>
+            <div>
+                <input type="radio" name="filterType" value="largerThan">
+                <label for="largerThan">LargerThan</label>
+            </div>
+            <div>
+                <input type="radio" name="filterType" value="smallerThan">
+                <label for="smallThan">SmallThan</label>
+            </div>
+            <div>
+                <input type="radio" name="filterType" value="largerOrEqualTo">
+                <label for="largerOrEqualTo">LargerOrEqualTo</label>
+            </div>
+            <div>
+                <input type="radio" name="filterType" value="smallerOrEqualTo">
+                <label for="smallerOrEqualTo">SmallerOrEqualTo</label>
+            </div>
+        </div><br>
+        <label for="targetValue"> value/text to compare with:</label><br>
+        <input type="text" name="targetValue"><br><br>
+            <!-- select sort order -->
+        <input type="submit" value="Submit" onclick="BlockConfigPanel.attachFilterConfigsToBlock(this); $(this).val('Submitted'); ">
+    </div>
+</div>

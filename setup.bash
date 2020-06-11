@@ -16,13 +16,12 @@ pip install django-cleanup
 sudo snap install inkscape
 
 # for converting downloaded html landing page to django template
-#regex search: =("|')(.+?)(?<=tony-ai-1)  #change tony-ai-1 accordingly
-#regex replace: =$1./landingPage_files
-#replace //(.+?)(?<=tony-ai-1)
-# by ./landingPage_files
+#regex search: ="(.+?)(?<=tony-ai)(.+?.svg)"  #change tony-ai-1 accordingly
+#regex replace: ="{% static './landingPage_files$2' %}"
+#replace //(.+?)(?<=tony-ai)(.+?(svg|png|jpg))
+# by {% static './landingPage_files$2' %}
 #replace (src|href)="(?!(http|#))(.+?)(?<!html)"
 #by $1="{% static '$3' %}"
-#replace (url\()(.+?)(\))
-#by $1{% static '$2' %}$3
+
 
 

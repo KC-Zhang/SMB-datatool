@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 
 <head>
     <meta charset="UTF-8">
@@ -9,138 +9,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
-<style>
-    body {margin: 0}
-    /* set up responsive grid*/
-    .gridWrapper {
-        height: 100vh;
-        display: grid;
-        grid-template-columns: repeat(10, 10fr);
-        grid-template-rows: 1cm 2cm repeat(8, 8fr);
-    }
-    [class*='box-']{border: 1px solid black; word-break: break-all;}
-    .box-menu {
-        grid-row-start:    1;
-        grid-row-end:      2;
-        grid-column-start: 1;
-        grid-column-end:   9;
-    }
-    .box-action {
-        grid-row-start:    1;
-        grid-row-end:      2;
-        grid-column-start: 9;
-        grid-column-end:  11;
-        padding: 5px 0;
-    }
-    .box-account {
-        grid-row-start:    1;
-        grid-row-end:      2;
-        grid-column-start:10;
-        grid-column-end:  11;
-        padding: 5px 0;
-    }
-    .box-toolbar {
-        grid-row-start:    2;
-        grid-row-end:      3;
-        grid-column-start: 1;
-        grid-column-end:  11;
-        display: none;
-    }
-    .box-configPanel {
-        grid-row-start:    3;
-        grid-row-end:     11;
-        grid-column-start: 1;
-        grid-column-end:   3;
-        display: none;
-    }
-    .box-toolBrief {
-        padding: 5px;
-        border: none;
-        border-bottom: 1px solid black;;
-    }
-    .box-toolDetails {
-        padding: 5px;
-        padding-top: 10px;
-        border: none;
-    }
-    .box-graph {
-        grid-row-start:    3;
-        grid-row-end:     9;
-        grid-column-start: 3;
-        grid-column-end:  11;
-        padding: 20px;
-        border: none;
-    }
-    .box-result {
-        grid-row-start:    9;
-        grid-row-end:     11;
-        grid-column-start: 3;
-        grid-column-end:  11;
-        display: none;
-    }
-    .menuButton {
-        background-color: white;
-        border: 1px solid black;
-        color: black;
-        height: 100%;
-        width: 3cm;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 0 0;
-        cursor: pointer;
-    }
-    .actionButton {
-        height: 100%;
-        display: inline-block;
-        margin: 0 5px;
-    }
-    .toolbarButton {
-        background-color: white;
-        border: 1px solid black;
-        color: black;
-        height: 2cm;
-        width: 2cm;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        cursor: grab;
-    }
-    .toolButtonInGraph {
-        background-color: white;
-        border: none;
-        height: 2cm;
-        width: 2cm;
-        cursor: pointer;
-    }
-    .graphBlock {
-        width: 2.5cm;
-        height: 2.5cm;
-        border: 1px solid black;
-        display: inline-block;
-        vertical-align: middle;
-    }
-    .arrowImg {
-        height: 1cm;
-        vertical-align: middle;
-    }
-    .fileListButton{
-        border: none;
-        color: black;
-        text-align: left;
-        text-decoration: none;
-        cursor: pointer;
-        background-color: lightgray;
-    }
-    .fileList {
-        border: none;
-        color: black;
-        text-align: left;
-        text-decoration: none;
-    }
-</style>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 
 
@@ -156,152 +25,53 @@
         <input class="actionButton" type="image" src="{% static 'dashboard/start.png' %}" onclick="run()"></input>
     </div>
     <div class="box-account">
-        <input class="actionButton" type="image" src="{% static 'dashboard/signup.png' %}" onload='this.style.display=["inline-block", "none"][Number({{ loggedIn }})]' onclick="location.href = 'accounts/signup'"></input>
-        <input class="actionButton" type="image" src="{% static 'dashboard/login.png' %}" onload='this.style.display=["inline-block", "none"][Number({{ loggedIn }})]' onclick="location.href = 'accounts/login'"></input>
-        <input class="actionButton" type="image" src="{% static 'dashboard/logout.png' %}" onload='this.style.display=["none","inline-block"][Number({{ loggedIn }})]' onclick="location.href = 'accounts/logout'"></input>
-
+        <input class="actionButton" type="image" src="{% static 'dashboard/signup.png' %}" onload='this.style.display=
+                ["inline-block", "none"][Number({{ loggedIn }})]' onclick="location.href = 'accounts/signup'"/>
+        <input class="actionButton" type="image" src="{% static 'dashboard/login.png' %}" onload='this.style.display=
+                ["inline-block", "none"][Number({{ loggedIn }})]' onclick="location.href = 'accounts/login'"/>
+        <input class="actionButton" type="image" src="{% static 'dashboard/logout.png' %}" onload='this.style.display=
+                ["none","inline-block"][Number({{ loggedIn }})]' onclick="location.href = 'accounts/logout'"/>
     </div>
 
     <!-- set default onclick action to none, which will be changed after its dragged to a block-->
     <div id="toolbarFavorites" name="favorites" class="box-toolbar">   <!-- block for file upload -->
-        <button id="inputToolButton" nodeType="input" configPanelName="inputConfigs" backendFunctionName="loadInputSheetAsDataframe" class="toolbarButton" draggable="true" ondragstart="Toolbar.drag(event)"
-                onclick="return 0; BlockConfigPanel.setFileNameClickable($(this).attr('configPanelName'));  BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">input</button>
-        <button id="deleteARowOrColumnButton" configPanelName="deleteARowOrColumnConfigs"  backendFunctionName="deleteARowOrColumn" class="toolbarButton" draggable="true" ondragstart="Toolbar.drag(event)"
-                onclick="return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">del row</button>
-        <button id="sortToolButton" class="toolbarButton" configPanelName="sortConfigs"  backendFunctionName="sortAColumn"  draggable="true" ondragstart="Toolbar.drag(event)"
-                onclick="return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">sort</button>
-        <button id="filterToolButton" class="toolbarButton" configPanelName="filterConfigs" backendFunctionName="filterAColumn" draggable="true" ondragstart="Toolbar.drag(event)"
-                onclick="return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">filter</button>
-{#        <button id="sumToolButton" class="toolbarButton" configPanelName="sum_" draggable="true" ondragstart="Toolbar.drag(event)"#}
-{#                onclick="return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">&#931</button>#}
-{#        <button id="averageToolButton" class="toolbarButton" configPanelName="average_" draggable="true" ondragstart="Toolbar.drag(event)"#}
-{#                onclick="return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">average</button>#}
-{#        <button id="plotToolButton" nodeType="endNode" class="toolbarButton" configPanelName="plot_" draggable="true" ondragstart="Toolbar.drag(event)"#}
-{#                onclick="return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">plot</button>#}
-        <button id="outputToolButton" nodeType="endNode" class="toolbarButton" configPanelName="output_" backendFunctionName="downloadOutputFile" draggable="true" ondragstart="Toolbar.drag(event)"
-                onclick="return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">output</button>
-    </div>
-    <div id="toolbarMath" name="math" class="box-toolbar">
-{#        <button id="plusToolButton" class="toolbarButton" configPanelName="plus_" draggable="true" ondragstart="Toolbar.drag(event)"#}
-{#                onclick="return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'))">+</button>#}
-{#        <button id="minusToolButton" class="toolbarButton" configPanelName="minus_" draggable="true" ondragstart="Toolbar.drag(event)"#}
-{#                onclick="return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'))">-</button>#}
-{#        <button id="multiplyToolButton" class="toolbarButton" configPanelName="multiply_" draggable="true" ondragstart="Toolbar.drag(event)"#}
-{#                onclick="return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'))">&times</button>#}
-{#        <button id="divideToolButton" class="toolbarButton" configPanelName="divide_" draggable="true"  ondragstart="Toolbar.drag(event)"#}
-{#                onclick="return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'))">&divide</button>#}
-{#        <button id="expToolButton" class="toolbarButton" configPanelName="power_" draggable="true" ondragstart="Toolbar.drag(event)"#}
-{#                onclick="return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'))">a<sup>x</sup></button>#}
+        <button id="inputToolButton" nodeType="input" configPanelName="inputConfigs" backendFunctionName="loadInputSheetAsDataframe"
+                class="toolbarButton" draggable="true" ondragstart="Toolbar.drag(event)" onclick=
+                        "return 0; BlockConfigPanel.setFileNameClickable($(this).attr('configPanelName'));BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">
+            input
+        </button>
+        <button id="deleteARowOrColumnButton" configPanelName="deleteARowOrColumnConfigs"  backendFunctionName="deleteARowOrColumn"
+                class="toolbarButton" draggable="true" ondragstart="Toolbar.drag(event)" onclick=
+                        "return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">
+            del row
+        </button>
+        <button id="sortToolButton" class="toolbarButton" configPanelName="sortConfigs"  backendFunctionName="sortAColumn"
+                draggable="true" ondragstart="Toolbar.drag(event)" onclick=
+                        "return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">
+            sort
+        </button>
+        <button id="filterToolButton" class="toolbarButton" configPanelName="filterConfigs" backendFunctionName="filterAColumn"
+                draggable="true" ondragstart="Toolbar.drag(event)" onclick=
+                        "return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">
+            filter
+        </button>
+        <button id="outputToolButton" nodeType="endNode" class="toolbarButton" configPanelName="outputConfigs"
+                backendFunctionName="downloadOutputFile" draggable="true" ondragstart="Toolbar.drag(event)" onclick=
+                        "return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">
+            output
+        </button>
     </div>
 
-    <div id="inputConfigPanel" name="inputConfigs" class="box-configPanel"  style="display: block">
-        <div name="upload" class="box-toolBrief">   <!-- block for file upload -->
-            <!-- Upload form. make sure use enctype attribute! -->
-            <form action="{% url 'uploadFile' %}" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <p>{{ form.non_field_errors }}</p>
-                <p>{{ form.fileField.label_tag }} {{ form.fileField.help_text }}</p>
-                <p>{{ form.fileField.errors }}
-                   {{ form.fileField }}</p>
-                <p><input type="submit" value="Upload" onclick="send$Form($(this.closest('form')), reloadDivID='listFileToolDetails')"/></p>
-            </form>
-        </div>
-        <div id="listFileToolDetails" name="listFiles" class="box-toolDetails">
-               {% include 'configPanel/input.html' %}
-        </div>
+    <div id="toolbarMath" name="math" class="box-toolbar">
     </div>
-    <div name="deleteARowOrColumnConfigs" class="box-configPanel">
-        <div class="box-toolBrief"> Delete a Row/Column </div>
-        <div class="box-toolDetails">
-{#            <p> Delete a row or column?</p>#}
-{#            <div>#}
-{#                <input type="radio" name="isRowOrColumn" value="row" checked>#}
-{#                <label for="row">Row</label>#}
-{#            </div>#}
-{#            <div>#}
-{#                <input type="radio" name="isRowOrColumn" value="column">#}
-{#                <label for="column">Column</label>#}
-{#            </div>#}
-{#            <br>#}
-                <!-- input column to sort by # -->
-            <label for="rowOrColumnNumberToDelete">Type in the row number:</label><br>
-            <input type="text" id="rowOrColumnNumberToDelete" name="colOrRowNumber"><br>
-            <br>
-                <!-- select sort order -->
-            <input type="submit" value="Submit" onclick="BlockConfigPanel.attachRowOrColumnDeletionConfigsToBlock(this);$(this).val('Submitted')">
-        </div>
-    </div>
-    <div name="sortConfigs" class="box-configPanel">
-        <div name="column" class="box-toolBrief">Sort A Column:</div>
-        <div name="order" class="box-toolDetails">
-                <!-- input column to sort by # -->
-            <label for="columnNumberToSort">Type in the column number:</label><br>
-            <input type="text" id="columnNumberToSort" name="columnNumber"><br>
-                <!-- select sort order -->
-            <p>Select the sorting order:</p>
-            <div>
-                <input type="radio" name="sortOrder" value="ascending" checked>
-                <label for="ascending">Ascending</label>
-            </div>
-            <div>
-                <input type="radio" name="sortOrder" value="descending">
-                <label for="descending">Descending</label>
-            </div>
-            <br>
-            <input type="submit" value="Submit" onclick="BlockConfigPanel.attachSortConfigsToBlock(this); $(this).val('Submitted'); ">
-        </div>
-    </div>
-    <div name="filterConfigs" class="box-configPanel">
-        <div name="column" class="box-toolBrief">Filter A Column:</div>
-        <div name="order" class="box-toolDetails">
-                <!-- input column to sort by # -->
-            <label for="columnNumberToFilter">Type in the column number:</label><br>
-            <input type="text" id="columnNumberToFilter" name="columnNumber"><br>
-                <!-- select sort order -->
-            <p>Select the filter:</p>
-            <div name="filterTypeSelector">
-                <div>
-                    <input type="radio" name="filterType" value="contain" checked>
-                    <label for="contain">Contain</label>
-                </div>
-                <div>
-                    <input type="radio" name="filterType" value="notContain">
-                    <label for="notContain">NotContain</label>
-                </div>
-                <div>
-                    <input type="radio" name="filterType" value="equal">
-                    <label for="equal">Equal</label>
-                </div>
-                <div>
-                    <input type="radio" name="filterType" value="largerThan">
-                    <label for="largerThan">LargerThan</label>
-                </div>
-                <div>
-                    <input type="radio" name="filterType" value="smallerThan">
-                    <label for="smallThan">SmallThan</label>
-                </div>
-                <div>
-                    <input type="radio" name="filterType" value="largerOrEqualTo">
-                    <label for="largerOrEqualTo">LargerOrEqualTo</label>
-                </div>
-                <div>
-                    <input type="radio" name="filterType" value="smallerOrEqualTo">
-                    <label for="smallerOrEqualTo">SmallerOrEqualTo</label>
-                </div>
-            </div><br>
-            <label for="targetValue"> value/text to compare with:</label><br>
-            <input type="text" name="targetValue"><br><br>
-                <!-- select sort order -->
-            <input type="submit" value="Submit" onclick="BlockConfigPanel.attachFilterConfigsToBlock(this); $(this).val('Submitted'); ">
-        </div>
-    </div>
-    <div name="outputConfigs" class="box-configPanel">
-        <div name="column" class="box-toolBrief">Output configuration: </div>
-        <div name="output_" class="box-toolDetails">
-            <p> Your graph is finished </p>
-            <p> Click the green triangle to run the graph and download the output file. </p>
-        </div>
-    </div>
+
+{#    configPanel ----------------------------------#}
+    {% include 'configPanel/inputConfigs.html' %}
+    {% include 'configPanel/deleteRowOrColumn.html' %}
+    {% include 'configPanel/sortConfigs.html' %}
+    {% include 'configPanel/filterConfigs.html' %}
+    {% include 'configPanel/outputConfigs.html' %}
+{#---------------------------------------------------#}
 
     <div class="box-graph">
         <div id="graphBlock0" number="0" class="graphBlock" ondrop="BlockGraph.drop(event, this)" ondragover="BlockGraph.allowDrop(event)"></div>
@@ -312,244 +82,7 @@
     </div>
 </div>
 
-<script>
-    //util functions
-    {
-        function assert(condition, message) {
-            if (!condition) {
-                throw message || "Assertion failed";
-            }
-        }
+{% include "dashboard/scripts.html" %}
 
-        function assertAlert(condition, message) {
-            if (!condition) {
-                alert(message || "Assertion failed");
-                throw message || "Assertion failed";
-
-            }
-        }
-
-        function tempAlert(msg, duration) {
-            var el = document.createElement("div");
-            el.setAttribute("style", "position:absolute;top:40%;left:20%;background-color:white;");
-            el.innerHTML = msg;
-            setTimeout(function () {
-                el.parentNode.removeChild(el);
-            }, duration);
-            document.body.appendChild(el);
-        }
-
-        function send$Post(elem, url, dict, reloadDivID=null) {
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: dict,
-                headers: {'X-CSRFToken': Cookies.get('csrftoken')},
-                success: function (data) {
-                    if(reloadDivID) {
-                        $('#' + reloadDivID).html(data);
-                    }
-                },
-            })
-        }
-
-        function send$Form($form, reloadDivID=null) {
-            $form.submit(function(e) {
-                e.preventDefault();
-                var formData = new FormData(this);
-                $.ajax({
-                    url: $form[0].action,
-                    type: 'POST',
-                    data: formData,
-                    success: function (data) {
-                        if(reloadDivID) {
-                            $('#' + reloadDivID).html(data);
-                        }
-                    },
-                    cache: false,
-                    contentType: false,
-                    processData: false
-                });
-            });
-        }
-    }
-
-    var Toolbar = {
-        drag: function(ev) {
-            ev.dataTransfer.setData("toolID",ev.target.id);
-        },
-        switchToolbar: function(name) {
-            // deactivate prev one
-            $("button.menuButton").css({'background-color': 'white', 'color': 'black'});
-            $("div.box-toolbar").hide();
-            // active current one
-            $("div.box-toolbar[name=" + name + "]").show();
-            $("button.menuButton[name=" + name + "]").css({'background-color': 'green', 'color': 'white'});
-        }
-    }
-
-    var BlockGraph = {
-        allowDrop: function(ev) {
-        ev.preventDefault();
-    },  // allow item to be drag onto another element, which is not allowed by default.
-        drop: function(ev, parentBlock) {
-            ev.preventDefault();
-            var toolId = ev.dataTransfer.getData("toolID");
-            var blockNumber = Number($(parentBlock).attr('number'));
-            assert($(".graphBlock[number="+blockNumber.toString()+"]").find($("button")).length===0,
-                "each block only takes one functional element"); // disallow multiple input per block
-            if ($("#"+toolId).attr('nodeType') !== 'endNode'){
-                //add arrow
-                $(parentBlock.parentElement).append(
-                    "<img id='arrowImg"+blockNumber.toString()+"' src='{% static 'dashboard/arrow.svg'%}' class='arrowImg' />");
-                //create a new block in box-graph
-                var siblingBlock = parentBlock.cloneNode(true);
-                $(siblingBlock).attr('number', (blockNumber+1).toString());
-                $(siblingBlock).attr('id', $(siblingBlock).attr('class') +$(siblingBlock).attr('number')); //increment block number
-                parentBlock.parentElement.append(siblingBlock);
-            }
-            //put button in the parent block
-            var nodeCopy = document.getElementById(toolId).cloneNode(true);
-            nodeCopy.id = toolId+"_"+parentBlock.id;
-            $(nodeCopy).attr('blockNumber', blockNumber.toString());
-            // enable onclick function
-            var priorOnclick = $(nodeCopy).attr('onclick');
-            assert(priorOnclick.slice(0, 10)==="return 0; ", "onclick function for the toolbar tools must start with 'return 0; '");
-            $(nodeCopy).attr('class','toolButtonInGraph');   // change style
-            $(nodeCopy).attr('onclick',priorOnclick.slice(10));  // activate onclick actions
-            ev.target.appendChild(nodeCopy);
-            //resize block size
-            $(parentBlock).css({'height':'auto', 'width':'auto'});
-            //triger onclick function
-            $(nodeCopy).click();
-        },
-        showToolConfig: function(name,blockNumber) {
-        $('.box-configPanel').hide();
-        $('.box-configPanel[name='+name+']').attr('blockNumber',blockNumber);
-        $('.box-configPanel[name='+name+']').show();
-    }
-    }
-
-    var BlockConfigPanel = {
-        setFileNameClickable: function(configPanelName) {
-            const $configPanel = $('.box-configPanel[name=' + configPanelName + ']');
-            $('#ChooseAFileH4').html('Choose a file:');
-            $configPanel.children('div[name=\'listFiles\']').children('div[name=\'uploadedFileListWithButtons\']').show()
-            $configPanel.children('div[name=\'listFiles\']').children('div[name=\'uploadedFileList\']').hide()
-        },
-        attachFileNameConfigsToBlock: function(thisElem, fileName) {
-            var blockNumber = $(thisElem).closest('div[class=\'box-configPanel\']').attr('blockNumber');
-            this.displayFileNameOnBlock(fileName, blockNumber);
-            $('#inputToolButton_graphBlock' + blockNumber).attr('userConfigs', JSON.stringify({
-                blockNumber: blockNumber,
-                fName: fName
-            }));
-        },
-        displayFileNameOnBlock: function(fileName, blockNumber){
-            $('#inputToolButton_graphBlock' + blockNumber).text(fileName);
-            $('#inputToolButton_graphBlock' + blockNumber).css('height', 'auto');
-        },
-        attachRowOrColumnDeletionConfigsToBlock: function(thisElem) {
-            var blockNumber = $(thisElem).closest('div[class=\'box-configPanel\']').attr('blockNumber')
-            assert($(thisElem).parent().attr('class') === 'box-toolDetails', "submit button needs to be placed in the box-toolDetails div")
-            var rowOrColumnNumber = $(thisElem).parent().find('input[name=\'colOrRowNumber\']').val();
-            var isRowOrColumn = $(thisElem).parent().find('input[name=\'isRowOrColumn\']:checked').attr('value');
-            assertAlert(rowOrColumnNumber.length, "Please type in the row or column number");
-            assertAlert(!isNaN(rowOrColumnNumber), "row/column number input only accepts numbers.");
-            $('#deleteARowOrColumnButton_graphBlock' + blockNumber).attr('userConfigs', JSON.stringify({
-                blockNumber: blockNumber,
-                isRowOrColumn: isRowOrColumn,
-                rowOrColumnNumber: rowOrColumnNumber
-            }));
-        },
-        attachSortConfigsToBlock: function(thisElem) {
-            var blockNumber = $(thisElem).closest('div[class=\'box-configPanel\']').attr('blockNumber')
-            assert($(thisElem).parent().attr('class') === 'box-toolDetails', "submit button needs to be placed in the box-toolDetails div")
-            var columnNumber = $(thisElem).parent().find('input[name=\'columnNumber\']').val();
-            var sortOrder = $(thisElem).parent().find('input[name=\'sortOrder\']:checked').attr('value');
-            assertAlert(columnNumber.length, "Please type in column number");
-            assertAlert(!isNaN(columnNumber), "column number input only accepts numbers.");
-            $('#sortToolButton_graphBlock' + blockNumber).attr('userConfigs', JSON.stringify({
-                blockNumber: blockNumber,
-                columnNumber: columnNumber,
-                sortOrder: sortOrder
-            }));
-        },
-        attachFilterConfigsToBlock: function (thisElem) {
-            const blockNumber = $(thisElem).closest('div[class=\'box-configPanel\']').attr('blockNumber')
-            assert($(thisElem).parent().attr('class') === 'box-toolDetails', "submit button needs to be placed in the box-toolDetails div")
-            const columnNumber = $(thisElem).parent().find('input[name=\'columnNumber\']').val();
-            const filterType = $(thisElem).parent().find('input[name=\'filterType\']:checked').attr('value');
-            const targetValue = $(thisElem).parent().find('input[name=\'targetValue\']').val();
-            this.validateFilterConfigInputs(columnNumber,filterType,targetValue);
-            $('#filterToolButton_graphBlock' + blockNumber).attr('userConfigs', JSON.stringify({
-                blockNumber: blockNumber,
-                columnNumber: columnNumber,
-                filterType: filterType,
-                targetValue: targetValue,
-            }));
-        },
-        validateFilterConfigInputs(columnNumber, filterType, targetValue){
-            assertAlert(columnNumber.length, "Please type in column number.");
-            assertAlert(!isNaN(columnNumber), "column number input only accepts numbers.");
-            assertAlert(targetValue.length, "Enter the value/text to compare the filter with.");
-            if (["largerThan", "smallerThan", "largerOrEqualTo", "smallerOrEqualTo"].includes(filterType)){
-                assertAlert(!isNaN(targetValue), filterType + " filter must compare to a numerical target.");
-            }
-        }
-    }
-
-    //run
-    {
-        function runGraphBackend(userConfigs) {
-            var csrftoken = Cookies.get('csrftoken');
-            const fetchUrl='runGraph/';
-            const fetchHeader ={
-                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRFToken': csrftoken};
-            fetch(fetchUrl,{method: 'POST', headers:fetchHeader, body:JSON.stringify(userConfigs), credentials: 'same-origin'})
-            .then(response=>{
-                    // get filename
-                var fName = response.headers.get('Content-Disposition').split("filename=")[1];
-                response.blob().then(blob=>{
-                    var url = window.URL.createObjectURL(blob);
-                    var a = document.createElement('a');
-                    a.href = url;
-                    a.download = fName
-                    document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
-                    a.click();
-                    a.remove();  //afterwards we remove the element again
-                })
-            })
-        }
-
-        function run(number = 0, functionNameAndConfigsInEachBlock = []) {
-            var $blockWithTool= $('#graphBlock' + number).children();
-            assertAlert($blockWithTool.length!==0, 'The graph needs to end with a output');
-            assertAlert($blockWithTool.length<2, 'block ' + number + ' contains more than 1 tool in it.');
-                // load file from the first block
-            if (number === 0) {
-                    // make sure first block contain and only contain an input element
-                assertAlert($blockWithTool.length, "Drop an input to the graph to create a workflow")
-                assertAlert($blockWithTool.attr("nodeType") === "input", "The first block needs to be an input element")
-            }
-                // output
-            if ($blockWithTool.attr('nodeType') === 'endNode'){
-                    // endNode reached, call backend process
-                functionNameAndConfigsInEachBlock.push({func:$blockWithTool.attr('backEndFunctionName'), args:'{}'});
-                runGraphBackend(userConfigs=functionNameAndConfigsInEachBlock);
-                console.log('sent graph to backend for processing');
-                return void(0);
-            }
-                // check if a block is not configured
-            assertAlert($blockWithTool.attr('userConfigs'), $blockWithTool.attr('configPanelName').slice(0, -1) + " tool in graph block " + number + " is not configured.");
-                // append block config
-            functionNameAndConfigsInEachBlock.push({func:$blockWithTool.attr('backEndFunctionName'), args:$blockWithTool.attr('userConfigs')});
-                // next block
-            run(number+1, functionNameAndConfigsInEachBlock);
-        }
-    }
-</script>
 </body>
 </html>

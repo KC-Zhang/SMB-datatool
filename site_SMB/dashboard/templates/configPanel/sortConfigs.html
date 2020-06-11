@@ -1,0 +1,20 @@
+<div name="sortConfigs" class="box-configPanel">
+    <div name="column" class="box-toolBrief">Sort A Column:</div>
+    <div name="order" class="box-toolDetails">
+            <!-- input column to sort by # -->
+        <label for="columnNumberToSort">Type in the column number:</label><br>
+        <input type="text" id="columnNumberToSort" name="columnNumber"><br>
+            <!-- select sort order -->
+        <p>Select the sorting order:</p>
+        <div>
+            <input type="radio" name="sortOrder" value="ascending" checked>
+            <label for="ascending">Ascending</label>
+        </div>
+        <div>
+            <input type="radio" name="sortOrder" value="descending">
+            <label for="descending">Descending</label>
+        </div>
+        <br>
+        <input type="submit" value="Submit" onclick="BlockConfigPanel.attachSortConfigsToBlock(this); $(this).val('Submitted'); ">
+    </div>
+</div>

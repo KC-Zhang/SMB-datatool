@@ -1,0 +1,130 @@
+body {margin: 0}
+/* set up responsive grid*/
+.gridWrapper {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: repeat(10, 10fr);
+    grid-template-rows: 1cm 2cm repeat(8, 8fr);
+}
+[class*='box-']{border: 1px solid black; word-break: break-all;}
+.box-menu {
+    grid-row-start:    1;
+    grid-row-end:      2;
+    grid-column-start: 1;
+    grid-column-end:   9;
+}
+.box-action {
+    grid-row-start:    1;
+    grid-row-end:      2;
+    grid-column-start: 9;
+    grid-column-end:  11;
+    padding: 5px 0;
+}
+.box-account {
+    grid-row-start:    1;
+    grid-row-end:      2;
+    grid-column-start:10;
+    grid-column-end:  11;
+    padding: 5px 0;
+}
+.box-toolbar {
+    grid-row-start:    2;
+    grid-row-end:      3;
+    grid-column-start: 1;
+    grid-column-end:  11;
+    display: none;
+}
+.box-configPanel {
+    grid-row-start:    3;
+    grid-row-end:     11;
+    grid-column-start: 1;
+    grid-column-end:   3;
+    display: none;
+}
+.box-toolBrief {
+    padding: 5px;
+    border: none;
+    border-bottom: 1px solid black;;
+}
+.box-toolDetails {
+    padding: 5px;
+    padding-top: 10px;
+    border: none;
+}
+.box-graph {
+    grid-row-start:    3;
+    grid-row-end:     9;
+    grid-column-start: 3;
+    grid-column-end:  11;
+    padding: 20px;
+    border: none;
+}
+.box-result {
+    grid-row-start:    9;
+    grid-row-end:     11;
+    grid-column-start: 3;
+    grid-column-end:  11;
+    display: none;
+}
+.menuButton {
+    background-color: white;
+    border: 1px solid black;
+    color: black;
+    height: 100%;
+    width: 3cm;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 0 0;
+    cursor: pointer;
+}
+.actionButton {
+    height: 100%;
+    display: inline-block;
+    margin: 0 5px;
+}
+.toolbarButton {
+    background-color: white;
+    border: 1px solid black;
+    color: black;
+    height: 2cm;
+    width: 2cm;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: grab;
+}
+.toolButtonInGraph {
+    background-color: white;
+    border: none;
+    height: 2cm;
+    width: 2cm;
+    cursor: pointer;
+}
+.graphBlock {
+    width: 2.5cm;
+    height: 2.5cm;
+    border: 1px solid black;
+    display: inline-block;
+    vertical-align: middle;
+}
+.arrowImg {
+    height: 1cm;
+    vertical-align: middle;
+}
+.fileListButton{
+    border: none;
+    color: black;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    background-color: lightgray;
+}
+.fileList {
+    border: none;
+    color: black;
+    text-align: left;
+    text-decoration: none;
+}

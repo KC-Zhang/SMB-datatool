@@ -25,7 +25,7 @@ def deleteARowOrColumn(args, blockIO):
     blockIO['pd'] = blockIO['pd'].drop([int(args['rowOColumnNumber'])-2], axis=0)
     return blockIO
 def sortAColumn(args, blockIO):
-    blockIO['pd']= blockIO['pd'].sort_values(by=blockIO['pd'].columns[int(args['colNum'])-1], ascending={'ascending':True, 'descending':False}[args['sortOrder']])
+    blockIO['pd']= blockIO['pd'].sort_values(by=blockIO['pd'].columns[int(args['columnNumber'])-1], ascending={'ascending':True, 'descending':False}[args['sortOrder']])
     return blockIO
 def filterAColumn(args, blockIO):
     df = blockIO['pd']
