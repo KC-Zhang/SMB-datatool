@@ -8,3 +8,5 @@ def landingPage(request):
     return render(request, 'landingPage/landingPage.html')
 def landingPageCN(request):
     return render(request, 'landingPage/landingPageCN.html')
+def interactiveDemo(request):
+    return render(request, 'interactiveDemo/interactiveDemo.html')

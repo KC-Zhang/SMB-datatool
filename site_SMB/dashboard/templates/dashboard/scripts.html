@@ -67,11 +67,11 @@ var Toolbar = {
     },
     switchToolbar: function(name) {
         // deactivate prev one
-        $("button.menuButton").css({'background-color': 'white', 'color': 'black'});
+        $("button.menuButton").removeClass('additionalStyleForSeletedMenuButton');
         $("div.box-toolbar").hide();
         // active current one
         $("div.box-toolbar[name=" + name + "]").show();
-        $("button.menuButton[name=" + name + "]").css({'background-color': 'green', 'color': 'white'});
+        $("button.menuButton[name=" + name + "]").addClass("additionalStyleForSeletedMenuButton");
     }
 }
 

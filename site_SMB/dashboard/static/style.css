@@ -1,43 +1,74 @@
-body {margin: 0}
+body {margin: 0;  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Lucida Grande", "Segoe UI";}
 /* set up responsive grid*/
 .gridWrapper {
     height: 100vh;
+    width: 100vw;
     display: grid;
-    grid-template-columns: repeat(10, 10fr);
-    grid-template-rows: 1cm 2cm repeat(8, 8fr);
+    grid-template-columns: 113px 21% 15px repeat(auto-fit,minmax(400px, 1fr)) 113px;
+    grid-template-rows:    100px 51px 97px 15px repeat(auto-fit,minmax(200px, 1fr)) 30%  50px;
+    background-color: #e3e8ee;
 }
-[class*='box-']{border: 1px solid black; word-break: break-all;}
-.box-menu {
+[class*='box-']{ word-break: break-all; background-color: white}
+.marginBox-top {
     grid-row-start:    1;
     grid-row-end:      2;
     grid-column-start: 1;
-    grid-column-end:   9;
+    grid-column-end:   6;
+}
+.marginBox-bottom {
+    grid-row-start:    7;
+    grid-row-end:      8;
+    grid-column-start: 1;
+    grid-column-end:   6;
+}
+.marginBox-left {
+    grid-row-start:    1;
+    grid-row-end:      8;
+    grid-column-start: 1;
+    grid-column-end:   2;
+}
+.
+ marginBox-right {
+    grid-row-start:    1;
+    grid-row-end:      8;
+    grid-column-start: 5;
+    grid-column-end:   6;
+}
+.box-menu {
+    grid-row-start:    2;
+    grid-row-end:      3;
+    grid-column-start: 4;
+    grid-column-end:   5;
 }
 .box-action {
-    grid-row-start:    1;
-    grid-row-end:      2;
-    grid-column-start: 9;
-    grid-column-end:  11;
+    background-color: transparent;
+    grid-row-start:    2;
+    grid-row-end:      3;
+    grid-column-start: 4;
+    grid-column-end:   5;
+    text-align: right;
     padding: 5px 0;
 }
 .box-account {
+    background-color: transparent;
     grid-row-start:    1;
     grid-row-end:      2;
-    grid-column-start:10;
-    grid-column-end:  11;
+    grid-column-start: 4;
+    grid-column-end:   5;
+    text-align: right;
     padding: 5px 0;
 }
 .box-toolbar {
-    grid-row-start:    2;
-    grid-row-end:      3;
-    grid-column-start: 1;
-    grid-column-end:  11;
+    grid-row-start:    3;
+    grid-row-end:      4;
+    grid-column-start: 4;
+    grid-column-end:   5;
     display: none;
 }
 .box-configPanel {
-    grid-row-start:    3;
-    grid-row-end:     11;
-    grid-column-start: 1;
+    grid-row-start:    2;
+    grid-row-end:      7;
+    grid-column-start: 2;
     grid-column-end:   3;
     display: none;
 }
@@ -52,32 +83,38 @@ body {margin: 0}
     border: none;
 }
 .box-graph {
-    grid-row-start:    3;
-    grid-row-end:     9;
-    grid-column-start: 3;
-    grid-column-end:  11;
+    grid-row-start:    5;
+    grid-row-end:      7;
+    grid-column-start: 4;
+    grid-column-end:   5;
     padding: 20px;
     border: none;
 }
 .box-result {
-    grid-row-start:    9;
-    grid-row-end:     11;
-    grid-column-start: 3;
-    grid-column-end:  11;
+    grid-row-start:    6;
+    grid-row-end:      7;
+    grid-column-start: 4;
+    grid-column-end:   5;
     display: none;
 }
 .menuButton {
-    background-color: white;
-    border: 1px solid black;
-    color: black;
+    border: 1px solid #e3e8ee;
+    color: #697386;
+    font-size: 18px;
+    font-weight: normal;
     height: 100%;
-    width: 3cm;
+    width: 264px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 16px;
     margin: 0 0;
     cursor: pointer;
+    background-color: white;
+}
+.additionalStyleForSeletedMenuButton {
+    border-bottom: 2px solid #1fa2ff;
+    color: #1fa2ff;
+    font-weight: bold;
 }
 .actionButton {
     height: 100%;
@@ -85,7 +122,6 @@ body {margin: 0}
     margin: 0 5px;
 }
 .toolbarButton {
-    background-color: white;
     border: 1px solid black;
     color: black;
     height: 2cm;
@@ -96,6 +132,7 @@ body {margin: 0}
     font-size: 16px;
     cursor: grab;
 }
+
 .toolButtonInGraph {
     background-color: white;
     border: none;
