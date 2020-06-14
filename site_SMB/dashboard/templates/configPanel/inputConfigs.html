@@ -1,16 +1,18 @@
-<div id="inputConfigPanel" name="inputConfigs" class="box-configPanel" style="display: block">
-    <div name="upload" class="box-toolBrief">   <!-- block for file upload -->
+{% load static %}
+<div id="inputConfigPanel" name="inputConfigs" class="box-configPanel boxShadow" style="display: block">
+    <div name="upload" class="box-upperConfigPanel">   <!-- block for file upload -->
         <!-- Upload form. make sure use enctype attribute! -->
+        <p style="font-size: 35pt; color: #1fa2ff; font-style: normal">Input</p>
         <form action="{% url 'uploadFile' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <p>{{ form.non_field_errors }}</p>
-            <p>{{ form.fileField.label_tag }} {{ form.fileField.help_text }}</p>
-            <p>{{ form.fileField.errors }}
+            <p class="lightColorFont">{{ form.non_field_errors }}</p>
+            <p class="lightColorFont">{{ form.fileField.label_tag }}<br>{{ form.fileField.help_text }}</p>
+            <p style="padding-top: 2em">{{ form.fileField.errors }}
                {{ form.fileField }}</p>
-            <p><input type="submit" value="Upload" onclick="send$Form($(this.closest('form')), reloadDivID='listFileToolDetails')"/></p>
+            <p><input type="image" src="{% static 'dashboard/upload.svg' %}" width="120px" value="Upload" onclick="send$Form($(this.closest('form')), reloadDivID='listFileToolDetails')"/></p>
         </form>
     </div>
-    <div id="listFileToolDetails" name="listFiles" class="box-toolDetails">
-           {% include 'configPanel/input.html' %}
+    <div id="listFileToolDetails" name="listFiles" class="box-lowerConfigPanel">
+           {% include 'configPanel/uploadedFileList.html' %}
     </div>
 </div>

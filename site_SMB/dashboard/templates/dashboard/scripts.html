@@ -26,7 +26,7 @@
         document.body.appendChild(el);
     }
 
-    function $sendPostAndReloadDiv(elem, url, dict, reloadDivID=null) {
+    function $sendPostAndReloadDiv(elem, url, dict, reloadDivID=null, appendResultToADivID=null) {
         $.ajax({
             type: "POST",
             url: url,
@@ -36,8 +36,56 @@
                 if(reloadDivID) {
                     $('#' + reloadDivID).html(data);
                 }
+                if(appendResultToADivID) {
+                    $('<div/>').html(data).appendTo($('#' + appendResultToADivID))
+                }
             },
         })
+    }
+    function $sendGetAndReloadDiv(elem, url, reloadDivID=null) {
+        $.ajax({
+            type: "GET",
+            url: url,
+            headers: {'X-CSRFToken': Cookies.get('csrftoken')},
+            success: function (data) {
+                if(reloadDivID) {
+                    $('#' + reloadDivID).html(data);
+                }
+            },
+        })
+    }
+    function $sendGetAndCreatePopupBelow(elem, url,newPopupId, align='right') {
+        $.ajax({
+            type: "GET",
+            url: url,
+            headers: {'X-CSRFToken': Cookies.get('csrftoken')},
+            success: function (data) {
+                if (align=='right') {
+                    var newDiv = $('<div/>');
+                    const offset = $(elem).offset();
+                    newDiv.html(data);
+                    newDiv.attr('id',newPopupId);
+                    newDiv.css('display', 'inline-block');
+                    newDiv.css('position', 'absolute');
+                    newDiv.prependTo($('body'));
+                    newDiv.offset({
+                        top: offset.top + $(elem).innerHeight() + 15,
+                        left: Math.max(offset.left + $(elem).outerWidth() - $(newDiv).outerWidth(), 0),
+                    });
+                    newDiv.hide();
+                }
+            },
+        })
+    }
+    function showAccountPopup() {
+        $button=$('#buttonToShowAccountPopup');
+        const offset = $button.offset();
+        $popup=$('#accountPopup')
+        $popup.show();
+        $popup.offset({
+            top: offset.top + $button.innerHeight() + 15,
+            left: Math.max(offset.left + $button.outerWidth() - $popup.outerWidth(), 0),
+        });
     }
 
     function send$Form($form, reloadDivID=null) {
@@ -57,6 +105,17 @@
                 contentType: false,
                 processData: false
             });
+        });
+    }
+
+    function toggleAccountPopupOnEveryClick() {
+        $(document).on("click", function(e){
+            if($(e.target).closest("#accountPopup").length){
+              $("#accountPopup").show();}
+            else if($(e.target).is("#buttonToShowAccountPopup")){}
+            else{
+                $("#accountPopup").hide();
+            }
         });
     }
 }
@@ -138,7 +197,7 @@ var BlockConfigPanel = {
     },
     attachRowOrColumnDeletionConfigsToBlock: function(thisElem) {
         var blockNumber = $(thisElem).closest('div[class=\'box-configPanel\']').attr('blockNumber')
-        assert($(thisElem).parent().attr('class') === 'box-toolDetails', "submit button needs to be placed in the box-toolDetails div")
+        assert($(thisElem).parent().attr('class') === 'box-lowerConfigPanel', "submit button needs to be placed in the box-lowerConfigPanel div")
         var rowOrColumnNumber = $(thisElem).parent().find('input[name=\'colOrRowNumber\']').val();
         var isRowOrColumn = $(thisElem).parent().find('input[name=\'isRowOrColumn\']:checked').attr('value');
         assertAlert(rowOrColumnNumber.length, "Please type in the row or column number");
@@ -151,7 +210,7 @@ var BlockConfigPanel = {
     },
     attachSortConfigsToBlock: function(thisElem) {
         var blockNumber = $(thisElem).closest('div[class=\'box-configPanel\']').attr('blockNumber')
-        assert($(thisElem).parent().attr('class') === 'box-toolDetails', "submit button needs to be placed in the box-toolDetails div")
+        assert($(thisElem).parent().attr('class') === 'box-lowerConfigPanel', "submit button needs to be placed in the box-lowerConfigPanel div")
         var columnNumber = $(thisElem).parent().find('input[name=\'columnNumber\']').val();
         var sortOrder = $(thisElem).parent().find('input[name=\'sortOrder\']:checked').attr('value');
         assertAlert(columnNumber.length, "Please type in column number");
@@ -164,7 +223,7 @@ var BlockConfigPanel = {
     },
     attachFilterConfigsToBlock: function (thisElem) {
         const blockNumber = $(thisElem).closest('div[class=\'box-configPanel\']').attr('blockNumber')
-        assert($(thisElem).parent().attr('class') === 'box-toolDetails', "submit button needs to be placed in the box-toolDetails div")
+        assert($(thisElem).parent().attr('class') === 'box-lowerConfigPanel', "submit button needs to be placed in the box-lowerConfigPanel div")
         const columnNumber = $(thisElem).parent().find('input[name=\'columnNumber\']').val();
         const filterType = $(thisElem).parent().find('input[name=\'filterType\']:checked').attr('value');
         const targetValue = $(thisElem).parent().find('input[name=\'targetValue\']').val();

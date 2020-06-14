@@ -28,49 +28,56 @@
 
 <body onload="Toolbar.switchToolbar('favorites');">
 <div class="gridWrapper">
-    <div class="box-menu">   <!-- block for file upload -->
+    <div class="box-menu  boxShadow">   <!-- block for file upload -->
         <!-- Upload form. make sure use enctype attribute! -->
         <button class="menuButton" name="favorites" onclick="Toolbar.switchToolbar('favorites')">Favorites</button>
         <button class="menuButton" name="math" onclick="Toolbar.switchToolbar('math')">Math</button>
     </div>
 
     <div class="box-action">
-        <input class="actionButton" type="image" src="{% static 'dashboard/start.png' %}" onclick="run()"></input>
+        <input class="actionButton" type="image" src="{% static 'dashboard/run.svg' %}" onclick="run()"></input>
     </div>
     <div class="box-account">
-        <input class="actionButton" type="image" src="{% static 'dashboard/signup.png' %}" onload='this.style.display=
-                ["inline-block", "none"][Number({{ loggedIn }})]' onclick="location.href = 'accounts/signup'"/>
-        <input class="actionButton" type="image" src="{% static 'dashboard/login.png' %}" onload='this.style.display=
-                ["inline-block", "none"][Number({{ loggedIn }})]' onclick="location.href = 'accounts/login'"/>
-        <input class="actionButton" type="image" src="{% static 'dashboard/logout.png' %}" onload='this.style.display=
-                ["none","inline-block"][Number({{ loggedIn }})]' onclick="location.href = 'accounts/logout'"/>
+        <input id="buttonToShowAccountPopup" class="actionButton" type="image" src="{% static 'dashboard/user.svg' %}" style="display: inline-block; width: 29px"
+               onload="$sendGetAndCreatePopupBelow(this, 'accounts', newPopupId='accountPopup', align='right'); toggleAccountPopupOnEveryClick();" onclick="showAccountPopup()"/>
+{#        <input class="actionButton" type="image" src="{% static 'dashboard/signup.png' %}" onload='this.style.display=#}
+{#                ["inline-block", "none"][Number({{ loggedIn }})]' onclick="location.href = 'accounts/signup'"/>#}
+{#        <input class="actionButton" type="image" src="{% static 'dashboard/login.png' %}" onload='this.style.display=#}
+{#                ["inline-block", "none"][Number({{ loggedIn }})]' onclick="location.href = 'accounts/login'"/>#}
+{#        <input class="actionButton" type="image" src="{% static 'dashboard/logout.png' %}" style="height: 44%;" onload='this.style.display=#}
+{#                ["none","inline-block"][Number({{ loggedIn }})]' onclick="location.href = 'accounts/logout'"/>#}
     </div>
 
     <!-- set default onclick action to none, which will be changed after its dragged to a block-->
-    <div id="toolbarFavorites" name="favorites" class="box-toolbar">   <!-- block for file upload -->
+    <div id="toolbarFavorites" name="favorites" class="box-toolbar  boxShadow">   <!-- block for file upload -->
         <button id="inputToolButton" nodeType="input" configPanelName="inputConfigs" backendFunctionName="loadInputSheetAsDataframe"
                 class="toolbarButton" draggable="true" ondragstart="Toolbar.drag(event)" onclick=
                         "return 0; BlockConfigPanel.setFileNameClickable($(this).attr('configPanelName'));BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">
+            <img src="{% static 'dashboard/input.svg' %}" style="width: 68px"><br>
             input
         </button>
         <button id="deleteARowOrColumnButton" configPanelName="deleteARowOrColumnConfigs"  backendFunctionName="deleteARowOrColumn"
                 class="toolbarButton" draggable="true" ondragstart="Toolbar.drag(event)" onclick=
                         "return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">
+            <img src="{% static 'dashboard/deleteRow.svg' %}" style="width: 68px"><br>
             del row
         </button>
-        <button id="sortToolButton" class="toolbarButton" configPanelName="sortConfigs"  backendFunctionName="sortAColumn"
+        <button id="sortToolButton" class="toolbarButton" configPanelName="sortConfigs" backendFunctionName="sortAColumn"
                 draggable="true" ondragstart="Toolbar.drag(event)" onclick=
                         "return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">
+            <img src="{% static 'dashboard/sort.svg' %}" style="width: 68px"><br>
             sort
         </button>
         <button id="filterToolButton" class="toolbarButton" configPanelName="filterConfigs" backendFunctionName="filterAColumn"
                 draggable="true" ondragstart="Toolbar.drag(event)" onclick=
                         "return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">
+            <img src="{% static 'dashboard/filter.svg' %}" style="width: 68px"><br>
             filter
         </button>
         <button id="outputToolButton" nodeType="endNode" class="toolbarButton" configPanelName="outputConfigs"
                 backendFunctionName="downloadOutputFile" draggable="true" ondragstart="Toolbar.drag(event)" onclick=
                         "return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">
+            <img src="{% static 'dashboard/output.svg' %}" style="width: 68px"><br>
             output
         </button>
     </div>
@@ -86,7 +93,7 @@
     {% include 'configPanel/outputConfigs.html' %}
 {#---------------------------------------------------#}
 
-    <div class="box-graph">
+    <div class="box-graph boxShadow">
         <div id="blockGraphCanvas" >
 
         </div>

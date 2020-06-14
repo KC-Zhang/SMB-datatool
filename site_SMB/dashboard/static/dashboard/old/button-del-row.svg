@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="77px" height="65px" viewBox="0 0 77 65" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>Group 4</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="TONY-AI---Dashboard" transform="translate(-846.000000, -192.000000)">
+            <g id="Group-4" transform="translate(848.000000, 194.000000)">
+                <rect id="Rectangle" stroke="#CCCCCC" stroke-width="3" fill="#F6F6F6" x="0" y="0" width="73" height="41" rx="10"></rect>
+                <text id="Del-Row" font-family="SFProDisplay-Regular, SF Pro Display" font-size="16" font-weight="normal" letter-spacing="0.192941175" fill="#333333">
+                    <tspan x="8" y="62">Del Row</tspan>
+                </text>
+                <path d="M22,31 L31,31 L31,28 L22,28 L22,31 Z M22,13 L31,13 L31,10 L22,10 L22,13 Z M21,25 L40,25 L40,22 L21,22 L21,25 Z M22,25 L31,25 L31,22 L22,22 L22,25 Z M21,19 L40,19 L40,16 L21,16 L21,19 Z" id="Shape" fill="#7B7B7B" fill-rule="nonzero"></path>
+                <g id="clear-24px" transform="translate(40.000000, 14.000000)">
+                    <polygon id="Path" points="0 0 15 0 15 15 0 15"></polygon>
+                    <polygon id="Path" fill="#FF0000" fill-rule="nonzero" points="12 3.90642857 11.0935714 3 7.5 6.59357143 3.90642857 3 3 3.90642857 6.59357143 7.5 3 11.0935714 3.90642857 12 7.5 8.40642857 11.0935714 12 12 11.0935714 8.40642857 7.5"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

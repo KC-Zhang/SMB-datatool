@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="77px" height="45px" viewBox="0 0 77 45" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>Group 7</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="TONY-AI---Dashboard" transform="translate(-1278.000000, -192.000000)">
+            <g id="Group-7" transform="translate(1280.000000, 194.000000)">
+                <rect id="Rectangle" stroke="#CCCCCC" stroke-width="3" fill="#F6F6F6" x="0" y="0" width="73" height="41" rx="10"></rect>
+                <g id="input-24px" transform="translate(24.000000, 5.000000)">
+                    <polygon id="Path" points="0 0 29 0 29 29 0 29"></polygon>
+                    <path d="M24.6363636,4 L3.36363636,4 C2.06363636,4 1,5.10122358 1,6.44716352 L1,11.3292547 L3.36363636,11.3292547 L3.36363636,6.42269188 L24.6363636,6.42269188 L24.6363636,23.5895439 L3.36363636,23.5895439 L3.36363636,18.6707453 L1,18.6707453 L1,23.5773081 C1,24.9232481 2.06363636,26 3.36363636,26 L24.6363636,26 C25.9363636,26 27,24.9232481 27,23.5773081 L27,6.44716352 C27,5.08898776 25.9363636,4 24.6363636,4 Z M12.8181818,19.894327 L17.5454545,15 L12.8181818,10.105673 L12.8181818,13.7764182 L1,13.7764182 L1,16.2235818 L12.8181818,16.2235818 L12.8181818,19.894327 Z" id="Shape" fill="#7B7B7B" fill-rule="nonzero"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

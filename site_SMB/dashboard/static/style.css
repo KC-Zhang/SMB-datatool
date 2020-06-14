@@ -1,5 +1,8 @@
-body {margin: 0;  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Lucida Grande", "Segoe UI";}
-/* set up responsive grid*/
+body {margin: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Lucida Grande", "Segoe UI"; color: #697386 }
+input, button {font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Lucida Grande", "Segoe UI"; color: #697386}
+.lightColorFont{
+    color: #7b7b7b;
+}
 .gridWrapper {
     height: 100vh;
     width: 100vw;
@@ -8,7 +11,8 @@ body {margin: 0;  font-family: system-ui, -apple-system, BlinkMacSystemFont, "He
     grid-template-rows:    100px 51px 97px 15px repeat(auto-fit,minmax(200px, 1fr)) 30%  50px;
     background-color: #e3e8ee;
 }
-[class*='box-']{ word-break: break-all; background-color: white}
+[class*='box-']{ word-break: break-all; background-color: white;}
+.boxShadow{box-shadow: 0 7px 14px 0 rgba(60,66,87,.08), 0 3px 6px 0 rgba(0,0,0,.12)}
 .marginBox-top {
     grid-row-start:    1;
     grid-row-end:      2;
@@ -50,12 +54,14 @@ body {margin: 0;  font-family: system-ui, -apple-system, BlinkMacSystemFont, "He
     padding: 5px 0;
 }
 .box-account {
+    display: flex;
     background-color: transparent;
     grid-row-start:    1;
     grid-row-end:      2;
     grid-column-start: 4;
     grid-column-end:   5;
-    text-align: right;
+	align-items: center;
+	justify-content: flex-end;
     padding: 5px 0;
 }
 .box-toolbar {
@@ -63,7 +69,19 @@ body {margin: 0;  font-family: system-ui, -apple-system, BlinkMacSystemFont, "He
     grid-row-end:      4;
     grid-column-start: 4;
     grid-column-end:   5;
-    display: none;
+    display: flex;
+    align-items: center;
+    padding: 0 68px;
+}
+.toolbarButton {
+    background-color: transparent;
+    border: transparent;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: grab;
+    margin: 0 30px ;
+    padding: 0;
 }
 .box-configPanel {
     grid-row-start:    2;
@@ -72,13 +90,14 @@ body {margin: 0;  font-family: system-ui, -apple-system, BlinkMacSystemFont, "He
     grid-column-end:   3;
     display: none;
 }
-.box-toolBrief {
-    padding: 5px;
+.box-upperConfigPanel {
+    padding: 15px 5px;
     border: none;
-    border-bottom: 1px solid black;;
+    border-bottom: 1px solid #e3e8ee;
+    text-align: center;
 }
-.box-toolDetails {
-    padding: 5px;
+.box-lowerConfigPanel {
+    padding: 15px 5px;
     padding-top: 10px;
     border: none;
 }
@@ -100,7 +119,7 @@ body {margin: 0;  font-family: system-ui, -apple-system, BlinkMacSystemFont, "He
 .menuButton {
     border: 1px solid #e3e8ee;
     color: #697386;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: normal;
     height: 100%;
     width: 264px;
@@ -120,17 +139,6 @@ body {margin: 0;  font-family: system-ui, -apple-system, BlinkMacSystemFont, "He
     height: 100%;
     display: inline-block;
     margin: 0 5px;
-}
-.toolbarButton {
-    border: 1px solid black;
-    color: black;
-    height: 2cm;
-    width: 2cm;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    cursor: grab;
 }
 
 .toolButtonInGraph {
@@ -153,7 +161,6 @@ body {margin: 0;  font-family: system-ui, -apple-system, BlinkMacSystemFont, "He
 }
 .fileListButton{
     border: none;
-    color: black;
     text-align: left;
     text-decoration: none;
     cursor: pointer;
@@ -161,7 +168,6 @@ body {margin: 0;  font-family: system-ui, -apple-system, BlinkMacSystemFont, "He
 }
 .fileList {
     border: none;
-    color: black;
     text-align: left;
     text-decoration: none;
 }

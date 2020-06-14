@@ -18,3 +18,6 @@ def signUp(request):
     else:
         form=UserCreationForm()
     return render(request, 'signup.html', {'form':form})
+
+def accountPopup(request):
+    return render(request, 'accountPopup/accountPopup.html')

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="77px" height="65px" viewBox="0 0 77 65" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>Group 6</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="TONY-AI---Dashboard" transform="translate(-1134.000000, -192.000000)">
+            <g id="Group-6" transform="translate(1136.000000, 194.000000)">
+                <rect id="Rectangle" stroke="#CCCCCC" stroke-width="3" fill="#F6F6F6" x="0" y="0" width="73" height="41" rx="10"></rect>
+                <text id="Filter" font-family="SFProDisplay-Regular, SF Pro Display" font-size="16" font-weight="normal" letter-spacing="0.192941175" fill="#333333">
+                    <tspan x="21" y="62">Filter</tspan>
+                </text>
+                <path d="M25.3191369,11.314375 C28.3656629,15.0375 33.9911786,21.9375 33.9911786,21.9375 L33.9911786,30.5625 C33.9911786,31.353125 34.6698601,32 35.4993597,32 L38.5157221,32 C39.3452217,32 40.0239032,31.353125 40.0239032,30.5625 L40.0239032,21.9375 C40.0239032,21.9375 45.6343371,15.0375 48.6808631,11.314375 C49.4500355,10.365625 48.7411903,9 47.4893999,9 L26.5106001,9 C25.2588097,9 24.5499645,10.365625 25.3191369,11.314375 Z" id="Path" fill="#7B7B7B" fill-rule="nonzero"></path>
+            </g>
+        </g>
+    </g>
+</svg>

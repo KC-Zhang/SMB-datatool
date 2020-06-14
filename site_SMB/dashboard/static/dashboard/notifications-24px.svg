@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="29px" height="36px" viewBox="0 0 29 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>notifications-24px</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="TONY-AI---Dashboard" transform="translate(-1852.000000, -39.000000)" fill="#8792A2" fill-rule="nonzero">
+            <g id="notifications-24px" transform="translate(1852.000000, 39.000000)">
+                <path d="M14.5,36 C16.49375,36 18.125,34.3384615 18.125,32.3076923 L10.875,32.3076923 C10.875,34.3384615 12.488125,36 14.5,36 Z M25.375,24.9230769 L25.375,15.6923077 C25.375,10.0246154 22.4025,5.28 17.21875,4.02461538 L17.21875,2.76923077 C17.21875,1.23692308 16.004375,0 14.5,0 C12.995625,0 11.78125,1.23692308 11.78125,2.76923077 L11.78125,4.02461538 C6.579375,5.28 3.625,10.0061538 3.625,15.6923077 L3.625,24.9230769 L0,28.6153846 L0,30.4615385 L29,30.4615385 L29,28.6153846 L25.375,24.9230769 Z" id="Shape"></path>
+            </g>
+        </g>
+    </g>
+</svg>

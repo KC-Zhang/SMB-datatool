@@ -2,6 +2,6 @@ from django import forms
 
 class FileUploadForm(forms.Form):
     fileField = forms.FileField(
-        label='Upload a xlsx file',
-        help_text='max. 42 mb'
+        label='Select a file to upload',
+        help_text='Max 42 MB',
     )

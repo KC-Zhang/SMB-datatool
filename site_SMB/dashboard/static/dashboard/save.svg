@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="148px" height="60px" viewBox="0 0 148 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>Group 9</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="TONY-AI---Dashboard" transform="translate(-1837.000000, -651.000000)">
+            <g id="Group-8" transform="translate(1838.000000, 652.000000)">
+                <g id="Group-9">
+                    <path d="M10,0 L136,0 C141.522847,-1.01453063e-15 146,4.4771525 146,10 L146,48 C146,53.5228475 141.522847,58 136,58 L14.7320807,58 L7.36604036,58 C3.2978886,58 4.98204903e-16,54.7021114 0,50.6339596 L0,10 C-6.76353751e-16,4.4771525 4.4771525,1.01453063e-15 10,0 Z" id="Rectangle" stroke="#E3E8EE" fill="#1FA2FF"></path>
+                    <text id="SAVE" font-family="SFProDisplay-Regular, SF Pro Display" font-size="24" font-weight="normal" letter-spacing="0.289411762" fill="#FFFFFF">
+                        <tspan x="57" y="38">SAVE</tspan>
+                    </text>
+                    <g id="save_alt-24px" transform="translate(22.000000, 18.000000)">
+                        <polygon id="Path" points="14 16 38 16 38 40 14 40"></polygon>
+                        <path d="M18.6666667,10 L18.6666667,18.5555556 L2.33333333,18.5555556 L2.33333333,10 L0,10 L0,18.5555556 C0,19.9 1.05,21 2.33333333,21 L18.6666667,21 C19.95,21 21,19.9 21,18.5555556 L21,10 L18.6666667,10 Z M11.2,11.4607407 L14.308,8.40296296 L16,10.0740741 L10,16 L4,10.0740741 L5.692,8.40296296 L8.8,11.4607407 L8.8,0 L11.2,0 L11.2,11.4607407 Z" id="Shape" fill="#FFFFFF" fill-rule="nonzero"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
