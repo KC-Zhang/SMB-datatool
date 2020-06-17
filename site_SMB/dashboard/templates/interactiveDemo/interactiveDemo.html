@@ -1,0 +1,57 @@
+{% load static %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!--  rete -->
+
+{#<script src={% static './interactiveDemo/node_modules/vue/dist/vue.min.js' %}></script>#}
+{#<script src={% static './interactiveDemo/node_modules/rete/build/rete.min.js' %}></script>#}
+{#<script src={% static './interactiveDemo/node_modules/rete-vue-render-plugin/build/vue-render-plugin.min.js' %}></script>#}
+{#<script src={% static './interactiveDemo/node_modules/rete-connection-plugin/build/connection-plugin.min.js' %}></script>#}
+{#<script src={% static './interactiveDemo/node_modules/rete-context-menu-plugin/build/context-menu-plugin.min.js' %}></script>#}
+{#<script src={% static './interactiveDemo/node_modules/rete-area-plugin/build/area-plugin.min.js' %}></script>#}
+{#<script src={% static './interactiveDemo/node_modules/rete-comment-plugin/build/comment-plugin.min.js' %}></script>#}
+{#<script src={% static './interactiveDemo/node_modules/rete-history-plugin/build/history-plugin.min.js' %}></script>#}
+{#<script src={% static './interactiveDemo/node_modules/rete-connection-mastery-plugin/build/connection-mastery-plugin.min.js' %}></script>#}
+{#<script src={% static './interactiveDemo/node_modules/lodash-es/min.js' %}></script>#}
+{#<script type="module" src='/static/interactiveDemo/reteScripts.js'></script>#}
+
+<div id="interactiveDemoCanvas" style="height: 100%; width: 100%" ondragover="allowDrop(event)" ondrop="addNodeBlock(event)"></div>
+
+
+<script>
+            //util functions
+    {
+        function assert(condition, message) {
+            if (!condition) {
+                throw message || "Assertion failed";
+            }
+        }
+
+        function assertAlert(condition, message) {
+            if (!condition) {
+                alert(message || "Assertion failed");
+                throw message || "Assertion failed";
+
+            }
+        }
+
+        function tempAlert(msg, duration) {
+            var el = document.createElement("div");
+            el.setAttribute("style", "position:absolute;top:40%;left:20%;background-color:white;");
+            el.innerHTML = msg;
+            setTimeout(function () {
+                el.parentNode.removeChild(el);
+            }, duration);
+            document.body.appendChild(el);
+        }
+
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("toolID",ev.target.id);
+        }
+    }
+</script>
+{% include "interactiveDemo/reteScripts.html" %}
+

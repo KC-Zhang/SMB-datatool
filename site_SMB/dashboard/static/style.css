@@ -7,8 +7,8 @@ input, button {font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helve
     height: 100vh;
     width: 100vw;
     display: grid;
-    grid-template-columns: 113px 21% 15px repeat(auto-fit,minmax(400px, 1fr)) 113px;
-    grid-template-rows:    100px 51px 97px 15px repeat(auto-fit,minmax(200px, 1fr)) 30%  50px;
+    grid-template-columns: 113px 21% 15px repeat(1,minmax(400px, 1fr)) 120px 113px;
+    grid-template-rows:    100px 51px 97px 15px 150px repeat(1,minmax(200px, 1fr)) 30%  50px;
     background-color: #e3e8ee;
 }
 [class*='box-']{ word-break: break-all; background-color: white;}
@@ -17,41 +17,51 @@ input, button {font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helve
     grid-row-start:    1;
     grid-row-end:      2;
     grid-column-start: 1;
-    grid-column-end:   6;
+    grid-column-end:   7;
 }
 .marginBox-bottom {
-    grid-row-start:    7;
-    grid-row-end:      8;
+    grid-row-start:    8;
+    grid-row-end:      9;
     grid-column-start: 1;
-    grid-column-end:   6;
+    grid-column-end:   7;
 }
 .marginBox-left {
     grid-row-start:    1;
-    grid-row-end:      8;
+    grid-row-end:      9;
     grid-column-start: 1;
     grid-column-end:   2;
 }
 .
  marginBox-right {
     grid-row-start:    1;
-    grid-row-end:      8;
-    grid-column-start: 5;
-    grid-column-end:   6;
+    grid-row-end:      9;
+    grid-column-start: 6;
+    grid-column-end:   7;
 }
 .box-menu {
     grid-row-start:    2;
     grid-row-end:      3;
     grid-column-start: 4;
-    grid-column-end:   5;
+    grid-column-end:   6;
 }
 .box-action {
+    grid-row-start:    5;
+    grid-row-end:      6;
+    grid-column-start: 5;
+    grid-column-end:   6;
     background-color: transparent;
-    grid-row-start:    2;
-    grid-row-end:      3;
-    grid-column-start: 4;
-    grid-column-end:   5;
+    display: inline-block;
+    z-index: 300;
+    /*flex-grow: 1;*/
+    /*flex-direction: column;*/
     text-align: right;
-    padding: 5px 0;
+}
+.actionButton {
+    width: 100px;
+    display: flex;
+    align-items: end;
+    margin-top: 20px;
+    margin-right: 20px;
 }
 .box-account {
     display: flex;
@@ -59,7 +69,7 @@ input, button {font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helve
     grid-row-start:    1;
     grid-row-end:      2;
     grid-column-start: 4;
-    grid-column-end:   5;
+    grid-column-end:   6;
 	align-items: center;
 	justify-content: flex-end;
     padding: 5px 0;
@@ -68,7 +78,7 @@ input, button {font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helve
     grid-row-start:    3;
     grid-row-end:      4;
     grid-column-start: 4;
-    grid-column-end:   5;
+    grid-column-end:   6;
     display: flex;
     align-items: center;
     padding: 0 68px;
@@ -103,11 +113,12 @@ input, button {font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helve
 }
 .box-graph {
     grid-row-start:    5;
-    grid-row-end:      7;
+    grid-row-end:      8;
     grid-column-start: 4;
-    grid-column-end:   5;
+    grid-column-end:   6;
     padding: 20px;
     border: none;
+    display: flex;
 }
 .box-result {
     grid-row-start:    6;
@@ -135,8 +146,8 @@ input, button {font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helve
     color: #1fa2ff;
     font-weight: bold;
 }
-.actionButton {
-    height: 100%;
+
+.accountButton {
     display: inline-block;
     margin: 0 5px;
 }

@@ -7,12 +7,31 @@
             {% csrf_token %}
             <p class="lightColorFont">{{ form.non_field_errors }}</p>
             <p class="lightColorFont">{{ form.fileField.label_tag }}<br>{{ form.fileField.help_text }}</p>
-            <p style="padding-top: 2em">{{ form.fileField.errors }}
-               {{ form.fileField }}</p>
-            <p><input type="image" src="{% static 'dashboard/upload.svg' %}" width="120px" value="Upload" onclick="send$Form($(this.closest('form')), reloadDivID='listFileToolDetails')"/></p>
+            <p><input type="image" src="{% static 'dashboard/choose-file.svg' %}" width="120px" value="Choose" onclick="selectFileToUpload()"/><br>
+                <span id="selectedUploadFileName" class="lightColorFont"> Please select a file. </span></p>
+            <div id="hiddenFileUploadInputField" style='height: 0px;width:0px; overflow:hidden;'>{{ form.fileField.errors }}{{ form.fileField }}</div>
+            <script>
+                 $('#hiddenFileUploadInputField').children('input').change(function(e){
+                    var fileName = e.target.files[0].name;
+                    $('#selectedUploadFileName').html(fileName);
+                });
+            </script>
+            <p><input type="image" src="{% static 'dashboard/upload.svg' %}" width="120px" value="Upload"
+             onclick="submitFileForm(this)"/></p>
         </form>
     </div>
     <div id="listFileToolDetails" name="listFiles" class="box-lowerConfigPanel">
            {% include 'configPanel/uploadedFileList.html' %}
     </div>
 </div>
+<script>
+    function selectFileToUpload() {
+        var fileFieldDiv = $('#hiddenFileUploadInputField');
+        var fileFieldInput = fileFieldDiv.children('input');
+        debugger
+        fileFieldInput.click();
+    }
+    function submitFileForm(elem) {
+        send$Form($(elem.closest('form')), reloadDivID='listFileToolDetails');
+    }
+</script>

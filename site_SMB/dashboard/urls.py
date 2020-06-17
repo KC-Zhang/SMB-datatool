@@ -8,6 +8,7 @@ urlpatterns = [
         path('', views.dashboard, name='dashboard'),
         path('uploadFile/', views.uploadFile, name='uploadFile'),
         path('runGraph/', views.runGraph, name='runGraph'),
-        path('deleteFile/', views.deleteFile, name='deleteFile')
+        path('deleteFile/', views.deleteFile, name='deleteFile'),
+        path('demo/', views.demo),
         ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

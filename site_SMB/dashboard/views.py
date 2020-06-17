@@ -107,7 +107,7 @@ def listFiles(request, form=None):
     fileModels = loadUploadedFiles(request)
     # Render list page with docs and forms
     return render(request,
-                  'configPanel/input.html',
+                  'configPanel/uploadedFileList.html',
                   {'fileModels': fileModels, 'loggedIn': int(loggedIn),  'form': form}
                   )
 
@@ -148,7 +148,6 @@ def uploadFile(request):
                 newDoc.session_key=request.session.session_key
             newDoc.save()
         form = FileUploadForm()  # A empty, unbound form
-
     return listFiles(request)
 
 def deleteFile(request):
@@ -162,3 +161,6 @@ def deleteFile(request):
         FileModel.objects.get(pk=request.POST['fileID']).delete()
 
     return listFiles(request)
+
+def demo(request):
+    return render(request, 'interactiveDemo/interactiveDemo.html')

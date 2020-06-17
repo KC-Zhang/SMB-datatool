@@ -5,6 +5,5 @@ urlpatterns = [
         path('', views.englishRedirect, name='redirect'),
         path('en', views.landingPage, name='landingPageEn'),
         path('zh-cn', views.landingPageCN, name='landingPageCN'),
-        path('interactivedemo', views.interactiveDemo, name='interactiveDemo'),
 ]
 
