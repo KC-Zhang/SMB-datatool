@@ -134,48 +134,6 @@ var Toolbar = {
     }
 }
 
-var BlockGraph = {
-    allowDrop: function(ev) {
-    ev.preventDefault();
-},  // allow item to be drag onto another element, which is not allowed by default.
-    drop: function(ev, parentBlock) {
-        ev.preventDefault();
-        var toolId = ev.dataTransfer.getData("toolID");
-        var blockNumber = Number($(parentBlock).attr('number'));
-        assert($(".graphBlock[number="+blockNumber.toString()+"]").find($("button")).length===0,
-            "each block only takes one functional element"); // disallow multiple input per block
-        if ($("#"+toolId).attr('nodeType') !== 'endNode'){
-            //add arrow
-            $(parentBlock.parentElement).append(
-                "<img id='arrowImg"+blockNumber.toString()+"' src='{% static 'dashboard/arrow.svg'%}' class='arrowImg' />");
-            //create a new block in box-graph
-            var siblingBlock = parentBlock.cloneNode(true);
-            $(siblingBlock).attr('number', (blockNumber+1).toString());
-            $(siblingBlock).attr('id', $(siblingBlock).attr('class') +$(siblingBlock).attr('number')); //increment block number
-            parentBlock.parentElement.append(siblingBlock);
-        }
-        //put button in the parent block
-        var nodeCopy = document.getElementById(toolId).cloneNode(true);
-        nodeCopy.id = toolId+"_"+parentBlock.id;
-        $(nodeCopy).attr('blockNumber', blockNumber.toString());
-        // enable onclick function
-        var priorOnclick = $(nodeCopy).attr('onclick');
-        assert(priorOnclick.slice(0, 10)==="return 0; ", "onclick function for the toolbar tools must start with 'return 0; '");
-        $(nodeCopy).attr('class','toolButtonInGraph');   // change style
-        $(nodeCopy).attr('onclick',priorOnclick.slice(10));  // activate onclick actions
-        ev.target.appendChild(nodeCopy);
-        //resize block size
-        $(parentBlock).css({'height':'auto', 'width':'auto'});
-        //triger onclick function
-        $(nodeCopy).click();
-    },
-    showToolConfig: function(configPanelName, blockNumber) {
-        $('.box-configPanel').hide();
-        $('.box-configPanel[name='+configPanelName+']').attr('blockNumber',blockNumber);
-        $('.box-configPanel[name='+configPanelName+']').show();
-
-    }
-}
 var BlockConfigPanel = {
     setFileNameClickable: function(configPanelName) {
         const $configPanel = $('.box-configPanel[name=' + configPanelName + ']');

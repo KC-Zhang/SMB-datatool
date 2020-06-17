@@ -1,4 +1,4 @@
-body {margin: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Lucida Grande", "Segoe UI"; color: #697386 }
+body {margin: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Lucida Grande", "Segoe UI"; color: # }
 input, button {font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Lucida Grande", "Segoe UI"; color: #697386}
 .lightColorFont{
     color: #7b7b7b;
@@ -93,9 +93,12 @@ input, button {font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helve
     margin: 0 30px ;
     padding: 0;
 }
+.toolbarButtonImage {
+    width: 68px;
+}
 .box-configPanel {
     grid-row-start:    2;
-    grid-row-end:      7;
+    grid-row-end:      8;
     grid-column-start: 2;
     grid-column-end:   3;
     display: none;

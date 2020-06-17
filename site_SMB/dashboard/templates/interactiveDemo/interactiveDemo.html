@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 {% load static %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!--  rete -->
@@ -14,7 +15,7 @@
 {#<script src={% static './interactiveDemo/node_modules/lodash-es/min.js' %}></script>#}
 {#<script type="module" src='/static/interactiveDemo/reteScripts.js'></script>#}
 
-<div id="interactiveDemoCanvas" style="height: 100%; width: 100%" ondragover="allowDrop(event)" ondrop="addNodeBlock(event)"></div>
+<div id="interactiveDemoCanvas" style="height: 100%; width: 100%" ondragover="allowDrop(event)" ondrop="dropAsABlock(event)"></div>
 
 
 <script>
@@ -51,6 +52,70 @@
         function drag(ev) {
             ev.dataTransfer.setData("toolID",ev.target.id);
         }
+    }
+    function dropAsABlock(ev){
+        ev.preventDefault();
+        var toolId = ev.dataTransfer.getData("toolID");
+        BlockGraph.addBlockToGraph({x:ev.clientX, y:ev.clientY}, toolId)
+    }
+    var BlockGraph = {
+        addBlockToGraph:async function (coord, toolId) {
+            const blockName=$('#'+toolId).attr('name')
+            var n1 = await myCanvasArea.componentLookup[blockName].createNode({num: 2});
+            const coordInCanvas=this.transfromHTMLCoordToReteCoord(coord);
+            n1.position = coordInCanvas;
+            myCanvasArea.editor.addNode(n1);
+            myCanvasArea.editor.connect(n1.outputs.get('num'));
+            {#myCanvasArea.editor.trigger('process');#}
+        },
+        transfromHTMLCoordToReteCoord: function(coord){
+            const [mouseXPx, mouseYPx] =  [coord.x-$(myCanvasArea.htmlContainerDiv).position().left, coord.y-$(myCanvasArea.htmlContainerDiv).position().top];
+            const { x, y, k } =myCanvasArea.editor.view.area.transform;
+            const coordInCanvas = [ (mouseXPx - x) / k, (mouseYPx - y) / k ]
+            return coordInCanvas
+        },
+        allowDrop: function(ev) {
+            ev.preventDefault();
+        } // allow item to be drag onto another element, which is not allowed by default.
+
+        {#drop: function(ev, parentBlock) {#}
+        {#    ev.preventDefault();#}
+        {#    var toolId = ev.dataTransfer.getData("toolID");#}
+        {#    var blockNumber = Number($(parentBlock).attr('number'));#}
+        {#    assert($(".graphBlock[number="+blockNumber.toString()+"]").find($("button")).length===0,#}
+        {#        "each block only takes one functional element"); // disallow multiple input per block#}
+        {#    if ($("#"+toolId).attr('nodeType') !== 'endNode'){#}
+        {#        //add arrow#}
+        {#        $(parentBlock.parentElement).append(#}
+        {#            "<img id='arrowImg"+blockNumber.toString()+"' src='{% static 'dashboard/arrow.svg'%}' class='arrowImg' />");#}
+        {#        //create a new block in box-graph#}
+        {#        var siblingBlock = parentBlock.cloneNode(true);#}
+        {#        $(siblingBlock).attr('number', (blockNumber+1).toString());#}
+        {#        $(siblingBlock).attr('id', $(siblingBlock).attr('class') +$(siblingBlock).attr('number')); //increment block number#}
+        {#        parentBlock.parentElement.append(siblingBlock);#}
+        {#    }#}
+        {#    //put button in the parent block#}
+        {#    var nodeCopy = document.getElementById(toolId).cloneNode(true);#}
+        {#    nodeCopy.id = toolId+"_"+parentBlock.id;#}
+        {#    $(nodeCopy).attr('blockNumber', blockNumber.toString());#}
+        {#    // enable onclick function#}
+        {#    var priorOnclick = $(nodeCopy).attr('onclick');#}
+        {#    assert(priorOnclick.slice(0, 10)==="return 0; ", "onclick function for the toolbar tools must start with 'return 0; '");#}
+        {#    $(nodeCopy).attr('class','toolButtonInGraph');   // change style#}
+        {#    $(nodeCopy).attr('onclick',priorOnclick.slice(10));  // activate onclick actions#}
+        {#    ev.target.appendChild(nodeCopy);#}
+        {#    //resize block size#}
+        {#    $(parentBlock).css({'height':'auto', 'width':'auto'});#}
+        {#    //triger onclick function#}
+        {#    $(nodeCopy).click();#}
+        {# },#}
+        {##}
+        {#showToolConfig: function(configPanelName, blockNumber) {#}
+        {#    $('.box-configPanel').hide();#}
+        {#    $('.box-configPanel[name='+configPanelName+']').attr('blockNumber',blockNumber);#}
+        {#    $('.box-configPanel[name='+configPanelName+']').show();#}
+        {##}
+        {# }#}
     }
 </script>
 {% include "interactiveDemo/reteScripts.html" %}
