@@ -121,7 +121,7 @@
 }
 
 var Toolbar = {
-    drag: function(ev) {
+    setTransferData: function(ev) {
         ev.dataTransfer.setData("toolID",ev.target.id);
     },
     switchToolbar: function(name) {

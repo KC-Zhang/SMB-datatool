@@ -35,36 +35,55 @@
 
     <!-- set default onclick action to none, which will be changed after its dragged to a block-->
     <div id="toolbarFavorites" name="favorites" class="box-toolbar  boxShadow">   <!-- block for file upload -->
-        <button id="inputToolButton" nodeType="input" name="input" configPanelName="inputConfigs" backendFunctionName="loadInputSheetAsDataframe"
-                class="toolbarButton" draggable="true" ondragstart="Toolbar.drag(event)" onclick=
-                        "return 0; BlockConfigPanel.setFileNameClickable($(this).attr('configPanelName'));BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">
-            <img draggable="false" src="{% static 'dashboard/input.svg' %}" class="toolbarButtonImage"><br>
+        <div class="toolbarButton" >
+            <input id="inputToolButton" type="image" src="{% static 'dashboard/input.svg' %}"
+                   class="toolbarButtonImage" name="input" configPanelName="inputConfigs"
+                   backendFunctionName="loadInputSheetAsDataframe" draggable="true"
+                   onmousedown="$(this).fadeTo(0, 0.3)" onmouseup="$(this).fadeTo(0, 1)"
+                   ondragstart="Toolbar.setTransferData(event); $(this).fadeTo(0, 0.3)" ondragend="$(this).fadeTo(0, 1)"
+                   onclick="return 0; BlockConfigPanel.setFileNameClickable($(this).attr('configPanelName'));
+                     BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));"/>
+            <br>
             input
-        </button>
-        <button id="deleteARowOrColumnButton" name="delRow" configPanelName="deleteARowOrColumnConfigs"  backendFunctionName="deleteARowOrColumn"
-                class="toolbarButton" draggable="true" ondragstart="Toolbar.drag(event)" onclick=
-                        "return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">
-            <img draggable="false" src="{% static 'dashboard/deleteRow.svg' %}" class="toolbarButtonImage"><br>
+        </div>
+        <div class="toolbarButton">
+            <input id="deleteARowOrColumnButton" name="delRow" type="image" src="{% static 'dashboard/deleteRow.svg' %}"
+                   class="toolbarButtonImage" configPanelName="deleteARowOrColumnConfigs"
+                   backendFunctionName="deleteARowOrColumn" draggable="true"
+                   onmousedown="$(this).fadeTo(0, 0.3)" onmouseup="$(this).fadeTo(0, 1)"
+                   ondragstart="Toolbar.setTransferData(event); $(this).fadeTo(0, 0.3)" ondragend="$(this).fadeTo(0, 1)"
+                   onclick="return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));"/>
+            <br>
             del row
-        </button>
-        <button id="sortToolButton" name="sort" class="toolbarButton" configPanelName="sortConfigs" backendFunctionName="sortAColumn"
-                draggable="true" ondragstart="Toolbar.drag(event)" onclick=
-                        "return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">
-            <img draggable="false" src="{% static 'dashboard/sort.svg' %}" class="toolbarButtonImage"><br>
+        </div>
+        <div class="toolbarButton">
+            <input id="sortToolButton" name="sort" type="image" src="{% static 'dashboard/sort.svg' %}"
+                   class="toolbarButtonImage" configPanelName="sortConfigs" backendFunctionName="sortAColumn" draggable="true"
+                   onmousedown="$(this).fadeTo(0, 0.3)" onmouseup="$(this).fadeTo(0, 1)"
+                   ondragstart="Toolbar.setTransferData(event); $(this).fadeTo(0, 0.3)" ondragend="$(this).fadeTo(0, 1)"
+                   onclick="return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));"/>
+            <br>
             sort
-        </button>
-        <button id="filterToolButton" name="filter" class="toolbarButton" configPanelName="filterConfigs" backendFunctionName="filterAColumn"
-                draggable="true" ondragstart="Toolbar.drag(event)" onclick=
-                        "return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">
-            <img draggable="false" src="{% static 'dashboard/filter.svg' %}" class="toolbarButtonImage"><br>
+        </div>
+        <div class="toolbarButton">
+            <input id="filterToolButton" name="filter" type="image" src="{% static 'dashboard/filter.svg' %}"
+                   class="toolbarButtonImage" configPanelName="filterConfigs" backendFunctionName="filterAColumn" draggable="true"
+                   onmousedown="$(this).fadeTo(0, 0.3)" onmouseup="$(this).fadeTo(0, 1)"
+                   ondragstart="Toolbar.setTransferData(event); $(this).fadeTo(0, 0.3)" ondragend="$(this).fadeTo(0, 1)"
+                   onclick="return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));"/>
+            <br>
             filter
-        </button>
-        <button id="outputToolButton" name="output" nodeType="endNode" class="toolbarButton" configPanelName="outputConfigs"
-                backendFunctionName="downloadOutputFile" draggable="true" ondragstart="Toolbar.drag(event)" onclick=
-                        "return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));">
-            <img draggable="false" src="{% static 'dashboard/output.svg' %}" class="toolbarButtonImage"><br>
+        </div>
+        <div class="toolbarButton">
+            <input id="outputToolButton" name="output" type="image" src="{% static 'dashboard/output.svg' %}"
+                   class="toolbarButtonImage" nodeType="endNode" configPanelName="outputConfigs"
+                   backendFunctionName="downloadOutputFile" draggable="true"
+                   onmousedown="$(this).fadeTo(0, 0.3)" onmouseup="$(this).fadeTo(0, 1)"
+                   ondragstart="Toolbar.setTransferData(event); $(this).fadeTo(0, 0.3)" ondragend="$(this).fadeTo(0, 1)"
+                   onclick="return 0; BlockGraph.showToolConfig($(this).attr('configPanelName'), $(this).attr('blockNumber'));"/>
+            <br>
             output
-        </button>
+        </div>
     </div>
 
     <div id="toolbarMath" name="math" class="box-toolbar">

@@ -89,12 +89,13 @@ input, button {font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helve
     text-align: center;
     text-decoration: none;
     font-size: 16px;
-    cursor: grab;
     margin: 0 30px ;
     padding: 0;
 }
 .toolbarButtonImage {
     width: 68px;
+    cursor: grab;
+    outline: 0px solid transparent;
 }
 .box-configPanel {
     grid-row-start:    2;
@@ -110,9 +111,8 @@ input, button {font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helve
     text-align: center;
 }
 .box-lowerConfigPanel {
-    padding: 15px 5px;
-    padding-top: 10px;
     border: none;
+    text-align: center;
 }
 .box-graph {
     grid-row-start:    5;
