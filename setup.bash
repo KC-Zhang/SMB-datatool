@@ -11,9 +11,10 @@ pip install xlrd
 pip install openpyxl
 pip install XlsxWriter
 pip install django-cleanup
+pip install django-widget-tweaks
 
 # for making icons
-sudo snap install inkscape
+#sudo snap install inkscape
 
 # for converting downloaded html landing page to django template
 #regex search: ="(.+?)(?<=tony-ai)(.+?.svg)"  #change tony-ai-1 accordingly

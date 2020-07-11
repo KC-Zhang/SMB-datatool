@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
     'django_cleanup.apps.CleanupConfig',
+    'widget_tweaks',
 ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

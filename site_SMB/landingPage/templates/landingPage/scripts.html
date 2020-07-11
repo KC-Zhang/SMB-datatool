@@ -1,0 +1,26 @@
+{% load static %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+
+<script>
+    //util functions
+{
+    function $sendFormAndAlert(elem) {
+        var form = $(elem);
+        var url = form.attr('action');
+        debugger
+        $.ajax({
+               type: "POST",
+               url: url,
+               data: form.serialize(), // serializes the form's elements.
+               headers: {'X-CSRFToken': Cookies.get('csrftoken')},
+               success: function(data)
+               {
+                   alert(data); // show response from the php script.
+               }
+             });
+    }
+}
+
+
+</script>
