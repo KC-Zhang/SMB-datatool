@@ -12,7 +12,7 @@
                type: "POST",
                url: url,
                data: form.serialize(), // serializes the form's elements.
-               headers: {'X-CSRFToken': Cookies.get('csrftoken')},
+               {#headers: {'X-CSRFToken': Cookies.get('csrftoken')},#}
                success: function(data)
                {
                    alert(data); // show response from the php script.
