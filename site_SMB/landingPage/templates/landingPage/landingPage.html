@@ -2841,6 +2841,7 @@
             {% load widget_tweaks %}
             <form action="{% url 'subscribe' %}" method="POST"><input type="hidden" name="pageId"
                                                                       value="78f98f4c-5ec4-47e2-8e9c-38966da39e14">
+                {% csrf_token %}
                 <input
                         type="hidden" name="pageVariant" value="a">
                 <div class="fields">
